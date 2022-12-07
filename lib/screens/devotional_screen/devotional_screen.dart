@@ -40,9 +40,24 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DevotionalAuthor author = DevotionalAuthor.brLeo;
+  List<String> authorNames = ["Leonard, Belinda, Dr. Divine"];
   DateTime? startDate = DateTime.now();
   DateTime? endDate = DateTime.now();
   String year = DateTime.now().year.toString();
+
+  @override
+  void dispose() {
+    confessionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+    contentController.dispose();
+    scriptureRefController.dispose();
+    scriptureController.dispose();
+    titleController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DevotionalProvider>(
@@ -58,6 +73,9 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text("Devotional Messages",
+                          style: Theme.of(context).textTheme.headline4),
+                      const SizedBox(height: 40),
                       const Text("Message Title"),
                       TextFormField(
                         key: titleKey,
@@ -104,6 +122,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       ),
                       const Text("Message Content"),
                       TextFormField(
+                        maxLines: 15,
                         key: contentKey,
                         controller: contentController,
                         decoration: const InputDecoration(
@@ -151,9 +170,13 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                         onTap: () async {
                           startDate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime(2022),
-                              firstDate: DateTime.now(),
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2022),
                               lastDate: DateTime(2030));
+
+                          setState(() {
+                            startDateController.text = startDate.toString();
+                          });
                         },
                       ),
 
@@ -175,22 +198,37 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                         onTap: () async {
                           endDate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime(2022),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2030));
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2022),
+                              lastDate: DateTime(2024));
+
+                          setState(() {
+                            endDateController.text = endDate.toString();
+                          });
                         },
                       ),
 
-                      const Text("End date Date"),
-                      ElevatedButton(
-                          onPressed: () async {
-                            endDate = (await showDatePicker(
-                                context: context,
-                                initialDate: DateTime(2022),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(2030)))!;
-                          },
-                          child: const Text("end Date")),
+                      const Text("Author"),
+
+                      DropdownButton<DevotionalAuthor>(
+                          value: author,
+                          hint: const Text("Select Author"),
+                          items: const [
+                            DropdownMenuItem<DevotionalAuthor>(
+                                value: DevotionalAuthor.brLeo,
+                                child: Text("Pst. Leo")),
+                            DropdownMenuItem<DevotionalAuthor>(
+                                value: DevotionalAuthor.auntyBelinda,
+                                child: Text("Pst. Belinda")),
+                            DropdownMenuItem<DevotionalAuthor>(
+                                value: DevotionalAuthor.drDivine,
+                                child: Text("Pst. Dr. Divine")),
+                          ],
+                          onChanged: (DevotionalAuthor? selectedAuthor) {
+                            setState(() {
+                              author = selectedAuthor ?? DevotionalAuthor.brLeo;
+                            });
+                          }),
 
                       ///---------Button-------///
                       ElevatedButton(
@@ -208,7 +246,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                   endDate: endDate!);
 
                               await devotionalData.uploadDevotionalMessage(
-                                  devotional: devotionalToAdd, year: year);
+                                  devotional: devotionalToAdd);
 
                               if (devotionalData.state ==
                                   DevotionalState.error) {
@@ -249,11 +287,11 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
   ///Todo: move this method somewher else
   String getAuthor(devotionalAuthor) {
     if (devotionalAuthor == DevotionalAuthor.brLeo) {
-      return "Leonard";
+      return "Pst. Leonard";
     } else if (devotionalAuthor == DevotionalAuthor.auntyBelinda) {
-      return "Belinda";
+      return "Pst. Belinda";
     } else {
-      return "Dr. Divine";
+      return "Pst. Dr. Divine";
     }
   }
 }

@@ -22,9 +22,9 @@ class DevotionalFirestoreService extends FirestoreService {
   }
 
   ///-------------Write Operations-------------///
-  Future<void> addDevotionalMessage(
-      {required Devotional devotional, required String year}) async {
+  Future<void> addDevotionalMessage({required Devotional devotional}) async {
     final Map<String, dynamic> data = devotional.toMap();
+    final String year = devotional.startDate.year.toString();
     try {
       await firestore
           .collection(year)
@@ -39,9 +39,9 @@ class DevotionalFirestoreService extends FirestoreService {
 
   Future<void> editDevotionalMessage({
     required Devotional devotional,
-    required String year,
   }) async {
     final Map<String, dynamic> data = devotional.toMap();
+    final String year = devotional.startDate.year.toString();
     try {
       await firestore
           .collection(year)
@@ -55,9 +55,9 @@ class DevotionalFirestoreService extends FirestoreService {
   }
 
   Future<void> deleteDevotionalMessage({
-    required String year,
     required Devotional devotional,
   }) async {
+    final String year = devotional.startDate.year.toString();
     try {
       await firestore
           .collection(year)

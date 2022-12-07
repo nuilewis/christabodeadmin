@@ -9,11 +9,11 @@ import '../models/devotional_model.dart';
 abstract class DevotionalRepository {
   Future<Either<Failure, List<Devotional>>> getDevotionals(String? year);
   Future<Either<Failure, void>> uploadDevotionalMessage(
-      {required Devotional devotional, String? year});
+      {required Devotional devotional});
   Future<Either<Failure, void>> editDevotionalMessage(
-      {required Devotional devotional, String? year});
+      {required Devotional devotional});
   Future<Either<Failure, void>> deleteDevotionalMessage(
-      {required Devotional devotional, String? year});
+      {required Devotional devotional});
 }
 
 class DevotionalRepositoryImplementation implements DevotionalRepository {
@@ -60,10 +60,10 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
 
   @override
   Future<Either<Failure, void>> deleteDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+      {required Devotional devotional}) async {
     try {
       await devotionalFirestoreService.deleteDevotionalMessage(
-          year: year ?? currentYear, devotional: devotional);
+          devotional: devotional);
       return Right(Future.value());
     } on FirebaseException catch (e) {
       return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
@@ -76,11 +76,12 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
 
   @override
   Future<Either<Failure, void>> editDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+      {required Devotional devotional}) async {
     if (await connectionChecker.isConnected) {
       try {
         await devotionalFirestoreService.editDevotionalMessage(
-            devotional: devotional, year: year ?? currentYear);
+          devotional: devotional,
+        );
         return Right(Future.value());
       } on FirebaseException catch (e) {
         return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
@@ -96,11 +97,12 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
 
   @override
   Future<Either<Failure, void>> uploadDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+      {required Devotional devotional}) async {
     if (await connectionChecker.isConnected) {
       try {
         await devotionalFirestoreService.addDevotionalMessage(
-            devotional: devotional, year: year ?? currentYear);
+          devotional: devotional,
+        );
         return Right(Future.value());
       } on FirebaseException catch (e) {
         return Left(FirebaseFailure(errorMessage: e.message, code: e.code));

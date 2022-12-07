@@ -35,13 +35,12 @@ class DevotionalProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> uploadDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+  Future<void> uploadDevotionalMessage({required Devotional devotional}) async {
     if (state == DevotionalState.submitting) return;
     state = DevotionalState.submitting;
     notifyListeners();
     Either<Failure, void> response = await devotionalRepository
-        .uploadDevotionalMessage(devotional: devotional, year: year);
+        .uploadDevotionalMessage(devotional: devotional);
     response.fold((failure) {
       errorMessage = failure.errorMessage ??
           "An error occurred while  trying to upload the devotional message";
@@ -51,13 +50,12 @@ class DevotionalProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> editDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+  Future<void> editDevotionalMessage({required Devotional devotional}) async {
     if (state == DevotionalState.submitting) return;
     state = DevotionalState.submitting;
     notifyListeners();
     Either<Failure, void> response = await devotionalRepository
-        .editDevotionalMessage(devotional: devotional, year: year);
+        .editDevotionalMessage(devotional: devotional);
     response.fold((failure) {
       errorMessage = failure.errorMessage ??
           "An error occurred while trying to edit the devotional message";
@@ -67,13 +65,12 @@ class DevotionalProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> deleteDevotionalMessage(
-      {required Devotional devotional, String? year}) async {
+  Future<void> deleteDevotionalMessage({required Devotional devotional}) async {
     if (state == DevotionalState.submitting) return;
     state = DevotionalState.submitting;
     notifyListeners();
     Either<Failure, void> response = await devotionalRepository
-        .deleteDevotionalMessage(devotional: devotional, year: year);
+        .deleteDevotionalMessage(devotional: devotional);
     response.fold((failure) {
       errorMessage = failure.errorMessage ??
           "An error occurred while trying to delete the devotional message";
