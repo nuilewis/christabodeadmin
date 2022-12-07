@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Devotional extends Equatable {
-  final String docId;
+  final String? docId;
   final String title;
   final String scripture;
   final String scriptureReference;
@@ -12,16 +12,17 @@ class Devotional extends Equatable {
   final DateTime startDate;
   final DateTime endDate;
 
-  const Devotional(
-      {required this.title,
-      required this.docId,
-      required this.scripture,
-      required this.scriptureReference,
-      required this.confessionOfFaith,
-      required this.author,
-      required this.content,
-      required this.startDate,
-      required this.endDate});
+  const Devotional({
+    required this.title,
+    required this.scripture,
+    required this.scriptureReference,
+    required this.confessionOfFaith,
+    required this.author,
+    required this.content,
+    required this.startDate,
+    required this.endDate,
+    this.docId,
+  });
 
   Devotional copyWith({
     String? docId,
@@ -95,7 +96,7 @@ class Devotional extends Equatable {
   bool get isEmpty => this == Devotional.empty;
   bool get isNotEmpty => this != Devotional.empty;
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         docId,
         title,
         scripture,
