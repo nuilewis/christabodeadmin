@@ -32,7 +32,9 @@ class NetworkFailure implements Failure {
   @override
   final String? code;
 
-  const NetworkFailure({this.errorMessage, this.code});
+  const NetworkFailure(
+      {this.errorMessage = "No internet, try connecting to a network",
+      this.code});
 
   @override
   List<Object?> get props => [errorMessage, code];

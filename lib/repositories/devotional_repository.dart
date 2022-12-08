@@ -49,7 +49,7 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
         return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
       } catch (e) {
         return const Left(
-            FirebaseFailure(errorMessage: "An unknown error has occured"));
+            FirebaseFailure(errorMessage: "An unknown error has occurred"));
       }
     } else {
       return const Left(NetworkFailure());

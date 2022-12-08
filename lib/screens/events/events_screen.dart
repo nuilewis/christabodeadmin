@@ -56,6 +56,13 @@ class _EventScreenState extends State<EventScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 20),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.chevron_left_rounded)),
+                      const SizedBox(height: 10),
                       Text("Events",
                           style: Theme.of(context).textTheme.headline4),
                       const SizedBox(height: 40),
@@ -159,9 +166,9 @@ class _EventScreenState extends State<EventScreen> {
                               await eventData.uploadEvent(event: eventToAdd);
 
                               if (eventData.state == EventState.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        "an error has occurred ${eventData.errorMessage}")));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(eventData.errorMessage)));
                               }
                               if (eventData.state == EventState.submitting) {
                                 ScaffoldMessenger.of(context).showSnackBar(

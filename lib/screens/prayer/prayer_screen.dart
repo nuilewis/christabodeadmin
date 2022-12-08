@@ -57,6 +57,13 @@ class _PrayerScreenState extends State<PrayerScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 20),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.chevron_left_rounded)),
+                      const SizedBox(height: 10),
                       Text("Prayers",
                           style: Theme.of(context).textTheme.headline4),
                       const SizedBox(height: 40),
@@ -70,6 +77,22 @@ class _PrayerScreenState extends State<PrayerScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "The prayer title cannot be empty";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      const Text("scripture reference"),
+                      TextFormField(
+                        maxLines: 5,
+                        key: scriptureRefKey,
+                        controller: scriptureRefController,
+                        decoration: const InputDecoration(
+                            hintText: "Scripture Reference",
+                            labelText: "Scripture Reference"),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "The scripture Ref cannot be empty";
                           } else {
                             return null;
                           }
@@ -89,21 +112,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                           }
                         },
                       ),
-                      const Text("scripture reference"),
-                      TextFormField(
-                        key: scriptureRefKey,
-                        controller: scriptureRefController,
-                        decoration: const InputDecoration(
-                            hintText: "Scripture Reference",
-                            labelText: "Scripture Reference"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The scripture Ref cannot be empty";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
+
                       const Text("Prayer Content"),
                       TextFormField(
                         maxLines: 15,
@@ -165,9 +174,10 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                   prayer: prayerToAdd);
 
                               if (prayerData.state == PrayerState.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        "An error has occurred: ${prayerData.errorMessage}")));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(prayerData.errorMessage)));
                               }
                               if (prayerData.state == PrayerState.submitting) {
                                 ScaffoldMessenger.of(context).showSnackBar(

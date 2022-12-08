@@ -73,8 +73,16 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 20),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.chevron_left_rounded)),
+                      const SizedBox(height: 10),
                       Text("Devotional Messages",
                           style: Theme.of(context).textTheme.headline4),
+
                       const SizedBox(height: 40),
                       const Text("Message Title"),
                       TextFormField(
@@ -86,20 +94,6 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "The message title cannot be empty";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      const Text("Scripture"),
-                      TextFormField(
-                        key: scriptureKey,
-                        controller: scriptureController,
-                        decoration: const InputDecoration(
-                            hintText: "Scripture", labelText: "Scripture"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The Scripture cannot be empty";
                           } else {
                             return null;
                           }
@@ -120,6 +114,22 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                           }
                         },
                       ),
+                      const Text("Scripture"),
+                      TextFormField(
+                        maxLines: 5,
+                        key: scriptureKey,
+                        controller: scriptureController,
+                        decoration: const InputDecoration(
+                            hintText: "Scripture", labelText: "Scripture"),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "The Scripture cannot be empty";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+
                       const Text("Message Content"),
                       TextFormField(
                         maxLines: 15,
@@ -138,6 +148,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       ),
                       const Text("Confession of Faith and Prayer"),
                       TextFormField(
+                        maxLines: 5,
                         key: confessionKey,
                         controller: confessionController,
                         decoration: const InputDecoration(
@@ -250,9 +261,10 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
 
                               if (devotionalData.state ==
                                   DevotionalState.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        "an error has occurred ${devotionalData.errorMessage}")));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(devotionalData.errorMessage)));
                               }
                               if (devotionalData.state ==
                                   DevotionalState.submitting) {

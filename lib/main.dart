@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const DevotionalScreen(),
+        home: const HomeScreen(),
         routes: {
           HomeScreen.id: (context) => const HomeScreen(),
           DevotionalScreen.id: (context) => const DevotionalScreen(),
