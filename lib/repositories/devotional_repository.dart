@@ -32,7 +32,7 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
     if (await connectionChecker.isConnected) {
       try {
         QuerySnapshot querySnapshot =
-            await devotionalFirestoreService.getDevotionals();
+            await devotionalFirestoreService.getDevotionals(year: year);
 
         if (querySnapshot.docs.isNotEmpty) {
           for (DocumentSnapshot element in querySnapshot.docs) {

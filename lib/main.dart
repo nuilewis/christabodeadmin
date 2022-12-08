@@ -1,10 +1,13 @@
 import 'package:christabodeadmin/providers/devotional_provider.dart';
 import 'package:christabodeadmin/providers/prayer_provider.dart';
 import 'package:christabodeadmin/repositories/devotional_repository.dart';
+import 'package:christabodeadmin/repositories/events_repository.dart';
 import 'package:christabodeadmin/repositories/prayer_repository.dart';
+import 'package:christabodeadmin/screens/events/events_screen.dart';
 import 'package:christabodeadmin/screens/homescreen/homescreen.dart';
 import 'package:christabodeadmin/screens/prayer/prayer_screen.dart';
 import 'package:christabodeadmin/services/devotional/devotional_firestore_service.dart';
+import 'package:christabodeadmin/services/events/events_firestore_service.dart';
 import 'package:christabodeadmin/services/prayer/prayer_firestore_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import 'core/connection_checker/connection_checker.dart';
 import 'firebase_options.dart';
+import 'providers/event_provider.dart';
 import 'screens/devotional/devotional_screen.dart';
 
 void main() async {
@@ -39,6 +43,11 @@ class _MyAppState extends State<MyApp> {
       PrayerFirestoreService();
   late final PrayerRepository _prayerRepository;
 
+  ///Event Dependencies///
+  final EventsFirestoreService _eventsFirestoreService =
+      EventsFirestoreService();
+  late final EventsRepository _eventsRepository;
+
   final ConnectionChecker _connectionChecker =
       ConnectionCheckerImplementation(InternetConnectionCheckerPlus());
 
@@ -53,6 +62,10 @@ class _MyAppState extends State<MyApp> {
         prayerFirestoreService: _prayerFirestoreService,
         connectionChecker: _connectionChecker);
 
+    _eventsRepository = EventsRepositoryImplementation(
+        eventsFirestoreService: _eventsFirestoreService,
+        connectionChecker: _connectionChecker);
+
     super.initState();
   }
 
@@ -63,7 +76,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<DevotionalProvider>(
             create: (context) => DevotionalProvider(_devotionalRepository)),
         ChangeNotifierProvider<PrayerProvider>(
-            create: (context) => PrayerProvider(_prayerRepository))
+            create: (context) => PrayerProvider(_prayerRepository)),
+        ChangeNotifierProvider<EventProvider>(
+            create: (context) => EventProvider(_eventsRepository))
       ],
       child: MaterialApp(
         title: 'Christ Abode Ministries Admin App',
@@ -75,6 +90,7 @@ class _MyAppState extends State<MyApp> {
           HomeScreen.id: (context) => const HomeScreen(),
           DevotionalScreen.id: (context) => const DevotionalScreen(),
           PrayerScreen.id: (context) => const PrayerScreen(),
+          EventScreen.id: (context) => const EventScreen(),
         },
       ),
     );
