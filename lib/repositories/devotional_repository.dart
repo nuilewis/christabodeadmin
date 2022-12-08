@@ -24,8 +24,6 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
       {required this.devotionalFirestoreService,
       required this.connectionChecker});
 
-  ///Todo: maybe add conenction checker
-
   final List<Devotional> _devotionalList = [];
   final String currentYear = DateTime.now().year.toString();
 

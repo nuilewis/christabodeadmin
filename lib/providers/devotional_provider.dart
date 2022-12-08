@@ -48,6 +48,8 @@ class DevotionalProvider extends ChangeNotifier {
     }, (success) {
       state = DevotionalState.success;
     });
+
+    notifyListeners();
   }
 
   Future<void> editDevotionalMessage({required Devotional devotional}) async {
@@ -63,6 +65,8 @@ class DevotionalProvider extends ChangeNotifier {
     }, (success) {
       state = DevotionalState.success;
     });
+
+    notifyListeners();
   }
 
   Future<void> deleteDevotionalMessage({required Devotional devotional}) async {
@@ -78,5 +82,6 @@ class DevotionalProvider extends ChangeNotifier {
     }, (success) {
       state = DevotionalState.success;
     });
+    notifyListeners();
   }
 }
