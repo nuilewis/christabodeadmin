@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "749895402114",
+    "project_id": "christabode",
+    "storage_bucket": "christabode.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749895402114:android:06ecfe2a3af6f151f7aa9b",
+        "android_client_info": {
+          "package_name": "com.christabodeministries.christabodenew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749895402114-1a21gq98ifg7ip5h2lbh29arl4iru47i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT4Ayf_Z0j_uYr3Y0zRzJSIDZuzs1D1n4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749895402114-1a21gq98ifg7ip5h2lbh29arl4iru47i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "749895402114-dl1ts5jvgev2kik3c3k9rgk41mjg4gv3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.christabodeministries.christabodenew"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749895402114:android:42a91bcea23e7382f7aa9b",
+        "android_client_info": {
+          "package_name": "com.example.christabodeadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749895402114-1a21gq98ifg7ip5h2lbh29arl4iru47i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT4Ayf_Z0j_uYr3Y0zRzJSIDZuzs1D1n4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749895402114-1a21gq98ifg7ip5h2lbh29arl4iru47i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "749895402114-dl1ts5jvgev2kik3c3k9rgk41mjg4gv3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.christabodeministries.christabodenew"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

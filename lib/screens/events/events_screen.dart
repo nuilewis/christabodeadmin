@@ -51,144 +51,140 @@ class _EventScreenState extends State<EventScreen> {
               padding: const EdgeInsets.all(48),
               child: Form(
                 key: _formKey,
-                child: Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 20),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.chevron_left_rounded)),
-                      const SizedBox(height: 10),
-                      Text("Events",
-                          style: Theme.of(context).textTheme.headline4),
-                      const SizedBox(height: 40),
-                      const Text("Event name"),
-                      TextFormField(
-                        key: nameKey,
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                            hintText: "Event Name", labelText: "Event Name"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The event name cannot be empty";
-                          } else {
-                            return null;
-                          }
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
-                      ),
+                        icon: const Icon(Icons.chevron_left_rounded)),
+                    const SizedBox(height: 10),
+                    Text("Events",
+                        style: Theme.of(context).textTheme.headline4),
+                    const SizedBox(height: 40),
+                    const Text("Event name"),
+                    TextFormField(
+                      key: nameKey,
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                          hintText: "Event Name", labelText: "Event Name"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "The event name cannot be empty";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
 
-                      const Text("Event description"),
-                      TextFormField(
-                        maxLines: 15,
-                        key: descriptionKey,
-                        controller: descriptionController,
-                        decoration: const InputDecoration(
-                            hintText: "Event description",
-                            labelText: "Event description"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The event description cannot be empty";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
+                    const Text("Event description"),
+                    TextFormField(
+                      maxLines: 15,
+                      key: descriptionKey,
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                          hintText: "Event description",
+                          labelText: "Event description"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "The event description cannot be empty";
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
 
-                      const Text("Start Date"),
-                      TextFormField(
-                        key: startDateKey,
-                        controller: startDateController,
-                        keyboardType: TextInputType.datetime,
-                        decoration: const InputDecoration(
-                            hintText: "Start Date", labelText: "Start Date"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The start date cannot be empty";
-                          } else {
-                            return null;
-                          }
-                        },
-                        onTap: () async {
-                          startDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2022),
-                              lastDate: DateTime(2030));
+                    const Text("Start Date"),
+                    TextFormField(
+                      key: startDateKey,
+                      controller: startDateController,
+                      keyboardType: TextInputType.datetime,
+                      decoration: const InputDecoration(
+                          hintText: "Start Date", labelText: "Start Date"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "The start date cannot be empty";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () async {
+                        startDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2022),
+                            lastDate: DateTime(2030));
 
-                          setState(() {
-                            startDateController.text = startDate.toString();
-                          });
-                        },
-                      ),
+                        setState(() {
+                          startDateController.text = startDate.toString();
+                        });
+                      },
+                    ),
 
-                      const Text("end Date"),
+                    const Text("end Date"),
 
-                      TextFormField(
-                        key: endDateKey,
-                        controller: endDateController,
-                        keyboardType: TextInputType.datetime,
-                        decoration: const InputDecoration(
-                            hintText: "Start Date", labelText: "Start Date"),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The end date cannot be blank";
-                          } else {
-                            return null;
-                          }
-                        },
-                        onTap: () async {
-                          endDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2022),
-                              lastDate: DateTime(2024));
+                    TextFormField(
+                      key: endDateKey,
+                      controller: endDateController,
+                      keyboardType: TextInputType.datetime,
+                      decoration: const InputDecoration(
+                          hintText: "Start Date", labelText: "Start Date"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "The end date cannot be blank";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () async {
+                        endDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2022),
+                            lastDate: DateTime(2024));
 
-                          setState(() {
-                            endDateController.text = endDate.toString();
-                          });
-                        },
-                      ),
+                        setState(() {
+                          endDateController.text = endDate.toString();
+                        });
+                      },
+                    ),
 
-                      ///---------Button-------///
-                      ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              Event eventToAdd = Event(
-                                  name: nameController.text,
-                                  description: descriptionController.text,
-                                  startDate: startDate!,
-                                  endDate: endDate!);
+                    ///---------Button-------///
+                    ElevatedButton(
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            Event eventToAdd = Event(
+                                name: nameController.text,
+                                description: descriptionController.text,
+                                startDate: startDate!,
+                                endDate: endDate!);
 
-                              await eventData.uploadEvent(event: eventToAdd);
+                            await eventData.uploadEvent(event: eventToAdd);
 
-                              if (eventData.state == EventState.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(eventData.errorMessage)));
-                              }
-                              if (eventData.state == EventState.submitting) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text("Submitting please wait")));
-                              }
-                              if (eventData.state == EventState.success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text("Successfully submitted")));
-                              }
-                            } else {
-                              ///Todo: throw a snackbar or something
+                            if (eventData.state == EventState.error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(eventData.errorMessage)));
                             }
-                          },
-                          child: const Text("upload Event"))
-                    ],
-                  ),
+                            if (eventData.state == EventState.submitting) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Submitting please wait")));
+                            }
+                            if (eventData.state == EventState.success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Successfully submitted")));
+                            }
+                          } else {
+                            ///Todo: throw a snackbar or something
+                          }
+                        },
+                        child: const Text("upload Event"))
+                  ],
                 ),
               ),
             ),

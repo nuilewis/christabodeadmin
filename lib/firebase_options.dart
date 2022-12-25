@@ -59,5 +59,6 @@ class DefaultFirebaseOptions {
     projectId: 'christabode',
     authDomain: 'christabode.firebaseapp.com',
     storageBucket: 'christabode.appspot.com',
+    measurementId: 'G-04Z2J9EV0G',
   );
 }
