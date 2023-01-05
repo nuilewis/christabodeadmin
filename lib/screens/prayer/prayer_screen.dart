@@ -177,7 +177,8 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             if (prayerData.state == PrayerState.submitting) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text("Submitting please wait")));
+                                      content:
+                                          Text("Submitting, please wait")));
                             }
                             if (prayerData.state == PrayerState.success) {
                               ScaffoldMessenger.of(context).showSnackBar(

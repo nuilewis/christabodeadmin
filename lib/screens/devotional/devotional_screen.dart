@@ -247,8 +247,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             Devotional devotionalToAdd = Devotional(
                                 title: titleController.text,
                                 scripture: scriptureController.text,
-                                scriptureReference:
-                                    scriptureRefController.text,
+                                scriptureReference: scriptureRefController.text,
                                 confessionOfFaith: confessionController.text,
                                 author: getAuthor(author),
                                 content: contentController.text,
@@ -258,8 +257,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             await devotionalData.uploadDevotionalMessage(
                                 devotional: devotionalToAdd);
 
-                            if (devotionalData.state ==
-                                DevotionalState.error) {
+                            if (devotionalData.state == DevotionalState.error) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
@@ -270,14 +268,13 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content:
-                                          Text("Submitting please wait")));
+                                          Text("Submitting, please wait")));
                             }
                             if (devotionalData.state ==
                                 DevotionalState.success) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content:
-                                          Text("Successfully submitted")));
+                                      content: Text("Successfully submitted")));
                             }
                           } else {
                             ///Todo: throw a snackbar or something

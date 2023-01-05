@@ -88,13 +88,13 @@ class _EventScreenState extends State<EventScreen> {
                       decoration: const InputDecoration(
                           hintText: "Event description",
                           labelText: "Event description"),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "The event description cannot be empty";
-                        } else {
-                          return null;
-                        }
-                      },
+                      // validator: (value) {
+                      //   if (value!.isEmpty) {
+                      //     return "The event description cannot be empty";
+                      //   } else {
+                      //     return null;
+                      //   }
+                      // },
                     ),
 
                     const Text("Start Date"),
