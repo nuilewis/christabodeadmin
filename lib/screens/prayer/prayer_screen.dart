@@ -146,7 +146,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                       onTap: () async {
                         date = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: date ?? DateTime.now(),
                             firstDate: DateTime(2022),
                             lastDate: DateTime(2024));
 

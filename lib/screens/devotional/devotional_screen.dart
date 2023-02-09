@@ -180,7 +180,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       onTap: () async {
                         startDate = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
                             lastDate: DateTime(2030));
 
@@ -208,7 +208,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       onTap: () async {
                         endDate = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
                             lastDate: DateTime(2024));
 

@@ -27,8 +27,8 @@ class _EventScreenState extends State<EventScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  DateTime? startDate = DateTime.now();
-  DateTime? endDate = DateTime.now();
+  DateTime? startDate;
+  DateTime? endDate;
   String year = DateTime.now().year.toString();
 
   @override
@@ -114,7 +114,7 @@ class _EventScreenState extends State<EventScreen> {
                       onTap: () async {
                         startDate = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
                             lastDate: DateTime(2030));
 
@@ -131,18 +131,18 @@ class _EventScreenState extends State<EventScreen> {
                       controller: endDateController,
                       keyboardType: TextInputType.datetime,
                       decoration: const InputDecoration(
-                          hintText: "Start Date", labelText: "Start Date"),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "The end date cannot be blank";
-                        } else {
-                          return null;
-                        }
-                      },
+                          hintText: "end Date", labelText: "end Date"),
+                      // validator: (value) {
+                      //   if (value!.isEmpty) {
+                      //     return "The end date cannot be blank";
+                      //   } else {
+                      //     return null;
+                      //   }
+                      // },
                       onTap: () async {
                         endDate = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
                             lastDate: DateTime(2024));
 
@@ -160,7 +160,7 @@ class _EventScreenState extends State<EventScreen> {
                                 name: nameController.text,
                                 description: descriptionController.text,
                                 startDate: startDate!,
-                                endDate: endDate!);
+                                endDate: endDate);
 
                             await eventData.uploadEvent(event: eventToAdd);
 
