@@ -149,7 +149,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             context: context,
                             initialDate: date ?? DateTime.now(),
                             firstDate: DateTime(2022),
-                            lastDate: DateTime(2024));
+                            lastDate: DateTime(2030));
 
                         setState(() {
                           dateController.text = date.toString();

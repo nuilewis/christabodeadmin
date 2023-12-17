@@ -198,7 +198,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       controller: endDateController,
                       keyboardType: TextInputType.datetime,
                       decoration: const InputDecoration(
-                          hintText: "Start Date", labelText: "Start Date"),
+                          hintText: "End Date", labelText: "Start Date"),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "The end date cannot be blank";
@@ -211,7 +211,8 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             context: context,
                             initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
-                            lastDate: DateTime(2024));
+                            lastDate: DateTime(2030),
+                        );
 
                         setState(() {
                           endDateController.text = endDate.toString();

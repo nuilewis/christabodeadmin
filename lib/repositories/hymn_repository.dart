@@ -84,10 +84,8 @@ class HymnRepository {
         await hymnFirestoreService.addHymn(hymn: hymn);
         return const Right(null);
       } on FirebaseException catch (e) {
-        print("firebase exception caguth");
         return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        print("general exception caught");
         return const Left(Failure(
             errorMessage:
             "An unknown error occurred while trying to upload this Hymn"));

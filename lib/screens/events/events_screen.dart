@@ -145,7 +145,7 @@ class _EventScreenState extends State<EventScreen> {
                             context: context,
                             initialDate: startDate ?? DateTime.now(),
                             firstDate: DateTime(2022),
-                            lastDate: DateTime(2024));
+                            lastDate: DateTime(2030));
 
                         setState(() {
                           endDateController.text = endDate.toString();

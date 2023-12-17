@@ -26,7 +26,7 @@ class HymnFirestoreService extends FirestoreService {
             await transaction.get(hymnDocumentReference);
 
         //Parse Data
-        if (snapshot.data()!.isNotEmpty) {
+        if (snapshot.exists) {
           Map<String, dynamic> documentData =
               snapshot.data() as Map<String, dynamic>;
 
@@ -99,11 +99,11 @@ class HymnFirestoreService extends FirestoreService {
         Map<String, dynamic>? documentData =
             snapshot.data() as Map<String, dynamic>;
 
-        List<Map<String, dynamic>>? hymnList = documentData["hymn"];
+        List<dynamic> hymnList = documentData["hymn"];
 
-        //Now update the hymn, can use the index
+        //Now update the hymn, can use the index to remove the item
         int index =
-            hymnList!.indexWhere((element) => element["number"] == hymn.number);
+            hymnList.indexWhere((element) => element["number"] == hymn.number);
         hymnList.removeAt(index);
 
         //Now update the transaction

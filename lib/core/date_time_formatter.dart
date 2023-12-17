@@ -21,20 +21,20 @@ Map<int, String> _daysOfWeekShortened = {
   7: "Sun",
 };
 //
-// Map<int, String> _monthsOfYear = {
-//   1: "January",
-//   2: "February",
-//   3: "March",
-//   4: "April",
-//   5: "May",
-//   6: "June",
-//   7: "July",
-//   8: "August",
-//   9: "September",
-//   10: "October",
-//   11: "November",
-//   12: "December",
-// };
+Map<int, String> _monthsOfYear = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
 Map<int, String> _monthsOfYearShortened = {
   1: "Jan",
   2: "Feb",
@@ -62,4 +62,10 @@ String dateTimeFormatter(BuildContext context, DateTime dateTime) {
       "${_daysOfWeekShortened[dateTime.weekday]}, ${dateTime.day} ${_monthsOfYearShortened[dateTime.month]}, ${dateTime.year} ";
 
   return fullyFormattedDate;
+}
+
+
+String monthFromDateTime(DateTime dateTime){
+  String? month = _monthsOfYear[dateTime.month];
+  return month!.toLowerCase();
 }
