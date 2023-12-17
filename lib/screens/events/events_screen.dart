@@ -2,11 +2,12 @@ import 'package:christabodeadmin/providers/event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/enum/app_state.dart';
 import '../../models/event_model.dart';
 
 class EventScreen extends StatefulWidget {
   static const id = "events_screen";
-  const EventScreen({Key? key}) : super(key: key);
+  const EventScreen({super.key});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -63,7 +64,7 @@ class _EventScreenState extends State<EventScreen> {
                         icon: const Icon(Icons.chevron_left_rounded)),
                     const SizedBox(height: 10),
                     Text("Events",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context).textTheme.headlineMedium),
                     const SizedBox(height: 40),
                     const Text("Event name"),
                     TextFormField(
@@ -164,17 +165,17 @@ class _EventScreenState extends State<EventScreen> {
 
                             await eventData.uploadEvent(event: eventToAdd);
 
-                            if (eventData.state == EventState.error) {
+                            if (eventData.state == AppState.error) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(eventData.errorMessage)));
                             }
-                            if (eventData.state == EventState.submitting) {
+                            if (eventData.state == AppState.submitting) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text("Submitting please wait")));
                             }
-                            if (eventData.state == EventState.success) {
+                            if (eventData.state == AppState.success) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text("Successfully submitted")));

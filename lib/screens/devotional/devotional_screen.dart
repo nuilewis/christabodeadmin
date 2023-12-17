@@ -2,11 +2,12 @@ import 'package:christabodeadmin/models/devotional_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/enum/app_state.dart';
 import '../../providers/devotional_provider.dart';
 
 class DevotionalScreen extends StatefulWidget {
   static const id = "devotional_screen";
-  const DevotionalScreen({Key? key}) : super(key: key);
+  const DevotionalScreen({super.key});
 
   @override
   State<DevotionalScreen> createState() => _DevotionalScreenState();
@@ -80,7 +81,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                         icon: const Icon(Icons.chevron_left_rounded)),
                     const SizedBox(height: 10),
                     Text("Devotional Messages",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context).textTheme.headlineMedium),
 
                     const SizedBox(height: 40),
                     const Text("Message Title"),
@@ -257,21 +258,21 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             await devotionalData.uploadDevotionalMessage(
                                 devotional: devotionalToAdd);
 
-                            if (devotionalData.state == DevotionalState.error) {
+                            if (devotionalData.state == AppState.error) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
                                           Text(devotionalData.errorMessage)));
                             }
                             if (devotionalData.state ==
-                                DevotionalState.submitting) {
+                                AppState.submitting) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content:
                                           Text("Submitting, please wait")));
                             }
                             if (devotionalData.state ==
-                                DevotionalState.success) {
+                                AppState.success) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text("Successfully submitted")));

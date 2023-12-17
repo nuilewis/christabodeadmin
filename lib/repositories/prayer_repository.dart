@@ -6,24 +6,18 @@ import '../core/errors/failure.dart';
 import '../models/prayer_model.dart';
 import '../services/prayer/prayer_firestore_service.dart';
 
-abstract class PrayerRepository {
-  Future<Either<Failure, List<Prayer>>> getPrayers();
-  Future<Either<Failure, void>> uploadPrayer({required Prayer prayer});
-  Future<Either<Failure, void>> editPrayer({required Prayer prayer});
-  Future<Either<Failure, void>> deletePrayer({required Prayer prayer});
-}
 
-class PrayerRepositoryImplementation implements PrayerRepository {
+class PrayerRepository {
   final PrayerFirestoreService prayerFirestoreService;
   final ConnectionChecker connectionChecker;
 
-  PrayerRepositoryImplementation(
+  PrayerRepository(
       {required this.prayerFirestoreService, required this.connectionChecker});
 
   final List<Prayer> _prayerList = [];
   final String currentYear = DateTime.now().year.toString();
 
-  @override
+   
   Future<Either<Failure, List<Prayer>>> getPrayers() async {
     if (await connectionChecker.isConnected) {
       try {
@@ -41,63 +35,63 @@ class PrayerRepositoryImplementation implements PrayerRepository {
         }
         return Right(_prayerList);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
         return const Left(
-            FirebaseFailure(errorMessage: "An unknown error has occurred"));
+            Failure(errorMessage: "An unknown error has occurred"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
+   
   Future<Either<Failure, void>> deletePrayer({required Prayer prayer}) async {
     try {
       await prayerFirestoreService.deletePrayer(prayer: prayer);
-      return Right(Future.value());
+      return const Right(null);
     } on FirebaseException catch (e) {
-      return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+      return Left(Failure(errorMessage: e.message, code: e.code));
     } catch (e) {
-      return const Left(FirebaseFailure(
+      return const Left(Failure(
           errorMessage:
               "An unknown error occurred while trying to delete this prayer"));
     }
   }
 
-  @override
+   
   Future<Either<Failure, void>> editPrayer({required Prayer prayer}) async {
     if (await connectionChecker.isConnected) {
       try {
         await prayerFirestoreService.editPrayer(prayer: prayer);
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
                 "An unknown error occurred while trying to edit this prayer"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
+   
   Future<Either<Failure, void>> uploadPrayer({required Prayer prayer}) async {
     if (await connectionChecker.isConnected) {
       try {
         await prayerFirestoreService.addPrayer(prayer: prayer);
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
                 "An unknown error occurred while trying to upload this prayer"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 }

@@ -6,28 +6,20 @@ import '../core/connection_checker/connection_checker.dart';
 import '../core/errors/failure.dart';
 import '../models/devotional_model.dart';
 
-abstract class DevotionalRepository {
-  Future<Either<Failure, List<Devotional>>> getDevotionals(String? year);
-  Future<Either<Failure, void>> uploadDevotionalMessage(
-      {required Devotional devotional});
-  Future<Either<Failure, void>> editDevotionalMessage(
-      {required Devotional devotional});
-  Future<Either<Failure, void>> deleteDevotionalMessage(
-      {required Devotional devotional});
-}
 
-class DevotionalRepositoryImplementation implements DevotionalRepository {
+
+class DevotionalRepository{
   final DevotionalFirestoreService devotionalFirestoreService;
   final ConnectionChecker connectionChecker;
 
-  DevotionalRepositoryImplementation(
+  DevotionalRepository(
       {required this.devotionalFirestoreService,
       required this.connectionChecker});
 
   final List<Devotional> _devotionalList = [];
   final String currentYear = DateTime.now().year.toString();
 
-  @override
+
   Future<Either<Failure, List<Devotional>>> getDevotionals(String? year) async {
     if (await connectionChecker.isConnected) {
       try {
@@ -46,33 +38,33 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
         }
         return Right(_devotionalList);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
         return const Left(
-            FirebaseFailure(errorMessage: "An unknown error has occurred"));
+            Failure(errorMessage: "An unknown error has occurred"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
+
   Future<Either<Failure, void>> deleteDevotionalMessage(
       {required Devotional devotional}) async {
     try {
       await devotionalFirestoreService.deleteDevotionalMessage(
           devotional: devotional);
-      return Right(Future.value());
+      return const Right(null);
     } on FirebaseException catch (e) {
-      return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+      return Left(Failure(errorMessage: e.message, code: e.code));
     } catch (e) {
-      return const Left(FirebaseFailure(
+      return const Left(Failure(
           errorMessage:
               "An unknown error occurred while trying to delete this message"));
     }
   }
 
-  @override
+
   Future<Either<Failure, void>> editDevotionalMessage(
       {required Devotional devotional}) async {
     if (await connectionChecker.isConnected) {
@@ -80,20 +72,19 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
         await devotionalFirestoreService.editDevotionalMessage(
           devotional: devotional,
         );
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
                 "An unknown error occurred while trying to edit this message"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
   Future<Either<Failure, void>> uploadDevotionalMessage(
       {required Devotional devotional}) async {
     if (await connectionChecker.isConnected) {
@@ -101,16 +92,16 @@ class DevotionalRepositoryImplementation implements DevotionalRepository {
         await devotionalFirestoreService.addDevotionalMessage(
           devotional: devotional,
         );
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
                 "An unknown error occurred while trying to upload this message"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 }

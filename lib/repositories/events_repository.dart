@@ -5,28 +5,20 @@ import '../core/errors/failure.dart';
 import '../models/event_model.dart';
 import '../services/events/events_firestore_service.dart';
 
-abstract class EventsRepository {
-  Future<Either<Failure, List<Event>>> getEvents(String? year);
-  Future<Either<Failure, void>> uploadEvent(
-      {required Event event});
-  Future<Either<Failure, void>> editEvent(
-      {required Event event});
-  Future<Either<Failure, void>> deleteEvent(
-      {required Event event});
-}
 
-class EventsRepositoryImplementation implements EventsRepository {
+
+class EventsRepository {
   final EventsFirestoreService eventsFirestoreService;
   final ConnectionChecker connectionChecker;
 
-  EventsRepositoryImplementation(
+  EventsRepository(
       {required this.eventsFirestoreService,
         required this.connectionChecker});
 
   final List<Event> _eventsList = [];
   final String currentYear = DateTime.now().year.toString();
 
-  @override
+
   Future<Either<Failure, List<Event>>> getEvents(String? year) async {
     if (await connectionChecker.isConnected) {
       try {
@@ -46,33 +38,33 @@ class EventsRepositoryImplementation implements EventsRepository {
         }
         return Right(_eventsList);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
         return const Left(
-            FirebaseFailure(errorMessage: "An unknown error has occurred"));
+            Failure(errorMessage: "An unknown error has occurred"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
+
   Future<Either<Failure, void>> deleteEvent(
       {required Event event}) async {
     try {
       await eventsFirestoreService.deleteEvent(
           event: event);
-      return Right(Future.value());
+      return const Right(null);
     } on FirebaseException catch (e) {
-      return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+      return Left(Failure(errorMessage: e.message, code: e.code));
     } catch (e) {
-      return const Left(FirebaseFailure(
+      return const Left(Failure(
           errorMessage:
           "An unknown error occurred while trying to delete this event"));
     }
   }
 
-  @override
+
   Future<Either<Failure, void>> editEvent(
       {required Event event}) async {
     if (await connectionChecker.isConnected) {
@@ -80,20 +72,19 @@ class EventsRepositoryImplementation implements EventsRepository {
         await eventsFirestoreService.editEvent(
           event: event,
         );
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
             "An unknown error occurred while trying to edit this event"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 
-  @override
   Future<Either<Failure, void>> uploadEvent(
       {required Event event}) async {
     if (await connectionChecker.isConnected) {
@@ -101,16 +92,16 @@ class EventsRepositoryImplementation implements EventsRepository {
         await eventsFirestoreService.addEvent(
         event: event,
         );
-        return Right(Future.value());
+        return const Right(null);
       } on FirebaseException catch (e) {
-        return Left(FirebaseFailure(errorMessage: e.message, code: e.code));
+        return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
-        return const Left(FirebaseFailure(
+        return const Left(Failure(
             errorMessage:
             "An unknown error occurred while trying to upload this event"));
       }
     } else {
-      return const Left(NetworkFailure());
+      return const Left(Failure.network());
     }
   }
 }

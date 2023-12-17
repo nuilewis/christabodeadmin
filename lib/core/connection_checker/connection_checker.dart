@@ -1,3 +1,4 @@
+
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 abstract class ConnectionChecker {
@@ -5,10 +6,10 @@ abstract class ConnectionChecker {
 }
 
 class ConnectionCheckerImplementation implements ConnectionChecker {
-  final InternetConnectionCheckerPlus internetConnectionChecker;
+  final InternetConnection internetConnectionChecker;
 
   ConnectionCheckerImplementation(this.internetConnectionChecker);
 
   @override
-  Future<bool> get isConnected => internetConnectionChecker.hasConnection;
+  Future<bool> get isConnected => internetConnectionChecker.hasInternetAccess;
 }

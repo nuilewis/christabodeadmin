@@ -2,11 +2,12 @@ import 'package:christabodeadmin/providers/prayer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/enum/app_state.dart';
 import '../../models/prayer_model.dart';
 
 class PrayerScreen extends StatefulWidget {
   static const id = "prayer_screen";
-  const PrayerScreen({Key? key}) : super(key: key);
+  const PrayerScreen({super.key});
 
   @override
   State<PrayerScreen> createState() => _PrayerScreenState();
@@ -64,7 +65,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                         icon: const Icon(Icons.chevron_left_rounded)),
                     const SizedBox(height: 10),
                     Text("Prayers",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context).textTheme.headlineMedium),
                     const SizedBox(height: 40),
                     const Text("prayer Title"),
                     TextFormField(
@@ -169,18 +170,18 @@ class _PrayerScreenState extends State<PrayerScreen> {
 
                             await prayerData.uploadPrayer(prayer: prayerToAdd);
 
-                            if (prayerData.state == PrayerState.error) {
+                            if (prayerData.state == AppState.error) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(prayerData.errorMessage)));
                             }
-                            if (prayerData.state == PrayerState.submitting) {
+                            if (prayerData.state == AppState.submitting) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content:
                                           Text("Submitting, please wait")));
                             }
-                            if (prayerData.state == PrayerState.success) {
+                            if (prayerData.state == AppState.success) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text("Successfully submitted")));
