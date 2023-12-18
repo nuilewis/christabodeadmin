@@ -1,1 +1,1 @@
-enum ContentType{devotional, prayer, hymn}
+enum AppContentType{devotional, prayer, hymn, event}
