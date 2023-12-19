@@ -25,20 +25,6 @@ class DevotionalRepository{
         Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
             await devotionalFirestoreService.getDevotionals(year: year);
 
-        // querySnapshot.listen((snapshot) {
-        //  final documentData = snapshot.docs;
-        //  for (var element in documentData) {
-        //  Map<String, dynamic> data = element.data();
-        //    List<dynamic> monthlyList = data["devotional"] as List<dynamic>;
-        //      for (Map<String, dynamic> element in monthlyList) {
-        //      _devotionalList.add(Devotional.fromMap(data: element));
-        //      }
-        //  }
-        //
-        // });
-
-
-
        return Right(querySnapshot);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));

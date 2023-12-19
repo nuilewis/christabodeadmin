@@ -91,7 +91,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Gap(24),
+                          const Gap(8),
                           Text("Devotional Messages",
                               style: Theme.of(context).textTheme.headlineSmall),
                           const Gap(24),
@@ -234,7 +234,6 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                     onPressed: () {
                                       setState(() {
                                         isEditing = false;
-
                                         titleController.text = '';
                                         scriptureController.text = '';
                                         scriptureRefController.text = '';

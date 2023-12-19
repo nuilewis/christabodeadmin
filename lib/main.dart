@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<DevotionalProvider>(
             create: (context) => DevotionalProvider(_devotionalRepository)..getDevotional( "2024")),
         ChangeNotifierProvider<PrayerProvider>(
-            create: (context) => PrayerProvider(_prayerRepository)),
+            create: (context) => PrayerProvider(_prayerRepository)..getPrayers()),
         ChangeNotifierProvider<EventProvider>(
             create: (context) => EventProvider(_eventsRepository)),
 

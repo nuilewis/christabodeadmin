@@ -7,14 +7,14 @@ import '../../models/prayer_model.dart';
 
 class PrayerFirestoreService extends FirestoreService {
   ///------------Read Operations---------------///
-  Future<QuerySnapshot> getPrayers() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> result =
-          await firestore.collection("prayers").get();
-      return result;
-    } on FirebaseException {
-      rethrow;
-    }
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getPrayers() async {
+
+    final prayerDocumentReference =
+    firestore.collection("prayer");
+    Stream<QuerySnapshot<Map<String, dynamic>>> stream =
+    prayerDocumentReference.snapshots();
+
+    return stream;
   }
 
   ///-------------Write Operations-------------///
@@ -58,10 +58,10 @@ class PrayerFirestoreService extends FirestoreService {
   }
 
   Future<void> editPrayer({
-    required Prayer prayer,
+    required Prayer oldPrayer,
+    required Prayer newPrayer,
   }) async {
-    final Map<String, dynamic> prayerData = prayer.toMap();
-    final String month = monthFromDateTime(prayer.date);
+    final String month = monthFromDateTime(oldPrayer.date);
     final prayerDocumentReference = firestore.collection("prayer").doc(month);
 
 
@@ -80,11 +80,32 @@ class PrayerFirestoreService extends FirestoreService {
 
         //Now update the prayer, can use the index to find the prayer to update
         int index =
-        prayerList.indexWhere((element) => element["date"] == prayer.date);
-        prayerList[index] = prayerData;
+        prayerList.indexWhere((element) => Prayer.fromMap(data: element) == oldPrayer);
 
-        //Now update the transaction
-        transaction.update(prayerDocumentReference, {"prayer": prayerList});
+        if(index==-1){
+          throw Exception("Failed to edit prayer, please refresh and try again");
+        }
+
+
+        prayerList[index] = newPrayer.toMap();
+
+        ///If the month and year is the same, keep the same document reference, if not,
+        ///delete the old message and place the updated message in a new ref.
+
+        final String newMonth = monthFromDateTime(newPrayer.date);
+
+        if (newMonth == month) {
+          //Now update the transaction
+          transaction.update(prayerDocumentReference, {"prayer": prayerList});
+        } else {
+          ///If the dates change, then delete the old devotional
+          ///from the old reference, and add the updated devotional
+          ///to a new reference
+
+          await deletePrayer(prayer: oldPrayer);
+          await addPrayer(prayer: newPrayer);
+        }
+
 
       },
     ).then((value) => debugPrint("Document Snapshot successfully updated"),
@@ -114,8 +135,7 @@ class PrayerFirestoreService extends FirestoreService {
         List<dynamic> prayerList = documentData["prayer"];
 
         //Now update the prayer can use the index to remove the item
-        prayerList.indexWhere((element) => element["date"] == prayer.date);
-        prayerList.remove(prayer);
+        prayerList.removeWhere((element) =>  Prayer.fromMap(data: element) == prayer);
 
 
         //Now update the transaction

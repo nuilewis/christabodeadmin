@@ -7,7 +7,7 @@ class Prayer extends Equatable {
   final String scriptureReference;
   final String content;
   final DateTime date;
-  final String? docId;
+ // final String? docId;
 
   const Prayer({
     required this.title,
@@ -15,7 +15,7 @@ class Prayer extends Equatable {
     required this.scriptureReference,
     required this.content,
     required this.date,
-    this.docId,
+//    this.docId,
   });
 
   ///----------copyWith----------///
@@ -25,10 +25,10 @@ class Prayer extends Equatable {
     String? scriptureReference,
     String? content,
     DateTime? date,
-    String? docId,
+ //   String? docId,
   }) {
     return Prayer(
-        docId: docId ?? this.docId,
+    //    docId: docId ?? this.docId,
         title: title ?? this.title,
         scripture: scripture ?? this.scripture,
         scriptureReference: scriptureReference ?? this.scriptureReference,
@@ -51,7 +51,7 @@ class Prayer extends Equatable {
   // factory constructor that returns a Devotional obj from a Map<String, dynamic>
   factory Prayer.fromMap({
     required Map<String, dynamic> data,
-    required String docId,
+  //  required String docId,
   }) {
     Timestamp date = data["date"];
     return Prayer(
@@ -60,7 +60,7 @@ class Prayer extends Equatable {
       scriptureReference: data["scriptureRef"],
       content: data["content"],
       date: date.toDate(),
-      docId: docId,
+  //    docId: docId,
     );
   }
 

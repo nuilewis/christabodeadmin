@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +14,23 @@ class PrayerProvider extends ChangeNotifier {
   AppState state = AppState.initial;
   String errorMessage = "";
   List<Prayer> allPrayers = [];
+  Stream<QuerySnapshot<Map<String, dynamic>>> dataStream = const Stream.empty();
+
 
   PrayerProvider(this.prayerRepository);
+  void updateDPrayerList(List<Prayer> prayers) async{
+
+    allPrayers = prayers;
+    //  notifyListeners();
+
+
+  }
 
   Future<void> getPrayers() async {
     if (state == AppState.submitting) return;
     state = AppState.submitting;
     notifyListeners();
-    Either<Failure, List<Prayer>> response =
+    Either<Failure, Stream<QuerySnapshot<Map<String, dynamic>>>> response =
         await prayerRepository.getPrayers();
 
     response.fold((failure) {
@@ -28,8 +38,8 @@ class PrayerProvider extends ChangeNotifier {
           failure.errorMessage ?? "An error occurred while getting the prayers";
 
       state = AppState.error;
-    }, (prayers) {
-      allPrayers = prayers;
+    }, (stream) {
+      dataStream = stream;
       state = AppState.success;
     });
     notifyListeners();
@@ -52,12 +62,12 @@ class PrayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> editPrayer({required Prayer prayer}) async {
+  Future<void> editPrayer({required Prayer oldPrayer, required Prayer newPrayer}) async {
     if (state == AppState.submitting) return;
     state = AppState.submitting;
     notifyListeners();
     Either<Failure, void> response =
-        await prayerRepository.editPrayer(prayer: prayer);
+        await prayerRepository.editPrayer(oldPrayer: oldPrayer, newPrayer: newPrayer);
     response.fold((failure) {
       errorMessage = failure.errorMessage ??
           "An error occurred while trying to edit the prayer";

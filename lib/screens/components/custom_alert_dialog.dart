@@ -33,7 +33,10 @@ class CustomAlertDialog extends StatelessWidget {
             style: ElevatedButton.styleFrom(
                 backgroundColor:
                     actionColor ?? Theme.of(context).colorScheme.error),
-            onPressed: action,
+            onPressed: () {
+              action.call();
+              Navigator.pop(context);
+            },
             child: Text(
               actionLabel,
               style: Theme.of(context)
@@ -42,8 +45,10 @@ class CustomAlertDialog extends StatelessWidget {
                   .copyWith(color: actionLabelColor ?? AppColours.white),
             ))
       ],
-      content: Text(text, textAlign: TextAlign.center,),
-
+      content: Text(
+        text,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

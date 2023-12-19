@@ -14,26 +14,25 @@ class PrayerRepository {
   PrayerRepository(
       {required this.prayerFirestoreService, required this.connectionChecker});
 
-  final List<Prayer> _prayerList = [];
   final String currentYear = DateTime.now().year.toString();
 
    
-  Future<Either<Failure, List<Prayer>>> getPrayers() async {
+  Future<Either<Failure, Stream<QuerySnapshot<Map<String, dynamic>>>>> getPrayers() async {
     if (await connectionChecker.isConnected) {
       try {
-        QuerySnapshot querySnapshot = await prayerFirestoreService.getPrayers();
+        Stream<QuerySnapshot<Map<String, dynamic>>>  querySnapshot = await prayerFirestoreService.getPrayers();
 
-        if (querySnapshot.docs.isNotEmpty) {
-          for (DocumentSnapshot element in querySnapshot.docs) {
-            Map<String, dynamic> documentData =
-                element.data() as Map<String, dynamic>;
-
-            Prayer prayer =
-                Prayer.fromMap(data: documentData, docId: element.id);
-            _prayerList.add(prayer);
-          }
-        }
-        return Right(_prayerList);
+        // if (querySnapshot.docs.isNotEmpty) {
+        //   for (DocumentSnapshot element in querySnapshot.docs) {
+        //     Map<String, dynamic> documentData =
+        //         element.data() as Map<String, dynamic>;
+        //
+        //     Prayer prayer =
+        //         Prayer.fromMap(data: documentData, docId: element.id);
+        //     _prayerList.add(prayer);
+        //   }
+        // }
+        return Right(querySnapshot);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
@@ -60,10 +59,10 @@ class PrayerRepository {
   }
 
    
-  Future<Either<Failure, void>> editPrayer({required Prayer prayer}) async {
+  Future<Either<Failure, void>> editPrayer({required Prayer oldPrayer, required Prayer newPrayer}) async {
     if (await connectionChecker.isConnected) {
       try {
-        await prayerFirestoreService.editPrayer(prayer: prayer);
+        await prayerFirestoreService.editPrayer(oldPrayer: oldPrayer, newPrayer:  newPrayer);
         return const Right(null);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));

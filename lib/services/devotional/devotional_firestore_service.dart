@@ -10,7 +10,7 @@ class DevotionalFirestoreService extends FirestoreService {
   ///------------Read Operations---------------///
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getDevotionals(
       {String? year}) async {
-    ///Todo: Update Devotional Read Services
+
     ///To ensure the app will auto update when the year changes
     final String currentYear = DateTime.now().year.toString();
     final devotionalDocumentReference =
@@ -122,11 +122,11 @@ class DevotionalFirestoreService extends FirestoreService {
           await addDevotionalMessage(devotional: newDevotional);
         }
       },
-    );
-    //     .then((value) => debugPrint("Document Snapshot successfully updated"),
-    //     onError: (e) {
-    //   throw Exception(e.toString());
-    // });
+    )
+        .then((value) => debugPrint("Document Snapshot successfully updated"),
+        onError: (e) {
+      throw Exception(e.toString());
+    });
   }
 
   Future<void> deleteDevotionalMessage({
