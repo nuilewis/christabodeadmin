@@ -99,32 +99,29 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                   dynamic documentData = snapshot.data!.docs;
                                   for (var element in documentData) {
                                     Map<String, dynamic> data =
-                                    element.data() as Map<String, dynamic>;
+                                        element.data() as Map<String, dynamic>;
                                     List<dynamic> monthlyList =
-                                    data["prayer"] as List<dynamic>;
+                                        data["prayer"] as List<dynamic>;
                                     for (Map<String, dynamic> element
-                                    in monthlyList) {
-                                      allPrayers.add(
-                                          Prayer.fromMap(data: element));
+                                        in monthlyList) {
+                                      allPrayers
+                                          .add(Prayer.fromMap(data: element));
                                     }
                                   }
 
                                   prayerData.updateDPrayerList(allPrayers);
-
-
                                 }
 
                                 return ListView.separated(
                                   shrinkWrap: true,
-                                  itemCount:
-                                  prayerData.allPrayers.length,
+                                  itemCount: prayerData.allPrayers.length,
                                   itemBuilder: (context, index) {
                                     return ContentListViewItem(
-                                        title: prayerData.allPrayers[index].title,
-
+                                        title:
+                                            prayerData.allPrayers[index].title,
                                         onEditPressed: () {
-                                          _oldPrayer = prayerData.allPrayers[index];
-
+                                          _oldPrayer =
+                                              prayerData.allPrayers[index];
 
                                           ///Trigger Prayer Edit
                                           ///
@@ -138,19 +135,19 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                               _oldPrayer.content;
 
                                           dateController.text =
-                                              _oldPrayer.date
-                                                  .toString();
+                                              _oldPrayer.date.toString();
 
                                           setState(() {
                                             isEditing = true;
                                           });
                                         },
                                         onDeletePressed: () {
-                                          prayerData.deletePrayer(prayer: prayerData.allPrayers[index]);
-
+                                          prayerData.deletePrayer(
+                                              prayer:
+                                                  prayerData.allPrayers[index]);
                                         },
-                                        date: prayerData.allPrayers[index].date
-                                          );
+                                        date:
+                                            prayerData.allPrayers[index].date);
                                   },
                                   separatorBuilder:
                                       (BuildContext context, int index) {
@@ -169,7 +166,6 @@ class _PrayerScreenState extends State<PrayerScreen> {
               Expanded(
                 flex: 3,
                 child: Padding(
-
                   padding: const EdgeInsets.only(
                       left: 4, top: 8, bottom: 8, right: 8),
                   child: Container(
@@ -189,10 +185,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             const Gap(24),
                             Row(
                               children: [
-                                Text(
-                                    isEditing
-                                        ? "Edit Prayer"
-                                        : "Add Prayer",
+                                Text(isEditing ? "Edit Prayer" : "Add Prayer",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall),
@@ -200,7 +193,10 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                 Visibility(
                                   visible: isEditing,
                                   child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                                    style: ElevatedButton.styleFrom(
+                                        foregroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .error),
                                     onPressed: () {
                                       setState(() {
                                         isEditing = false;
@@ -208,8 +204,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                         scriptureController.text = '';
                                         scriptureRefController.text = '';
                                         contentController.text = '';
-                                        dateController.text ='';
-                                        
+                                        dateController.text = '';
                                       });
                                     },
                                     child: const Text("Cancel Edit"),
@@ -224,9 +219,9 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             TextFormField(
                               key: titleKey,
                               controller: titleController,
-                              decoration:  AppInputDecoration.inputDecoration(context)
-                                      .copyWith(
-                                  hintText: "Prayer Title"),
+                              decoration:
+                                  AppInputDecoration.inputDecoration(context)
+                                      .copyWith(hintText: "Prayer Title"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "The prayer title cannot be empty";
@@ -239,13 +234,13 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             const Text("scripture reference"),
                             const Gap(8),
                             TextFormField(
-                              maxLines: 5,
                               key: scriptureRefKey,
                               controller: scriptureRefController,
-                              decoration:  AppInputDecoration.inputDecoration(context)
+                              decoration:
+                                  AppInputDecoration.inputDecoration(context)
                                       .copyWith(
-                                  hintText: "Scripture Reference",
-                                 ),
+                                hintText: "Scripture Reference",
+                              ),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "The scripture Reference cannot be empty";
@@ -258,11 +253,12 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             const Text("Scripture"),
                             const Gap(8),
                             TextFormField(
+                              maxLines: 5,
                               key: scriptureKey,
                               controller: scriptureController,
-                              decoration:  AppInputDecoration.inputDecoration(context)
-                                      .copyWith(
-                                  hintText: "Scripture"),
+                              decoration:
+                                  AppInputDecoration.inputDecoration(context)
+                                      .copyWith(hintText: "Scripture"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "The scripture cannot be empty";
@@ -278,10 +274,11 @@ class _PrayerScreenState extends State<PrayerScreen> {
                               maxLines: 15,
                               key: contentKey,
                               controller: contentController,
-                              decoration:  AppInputDecoration.inputDecoration(context)
+                              decoration:
+                                  AppInputDecoration.inputDecoration(context)
                                       .copyWith(
-                                  hintText: "Prayer Content",
-                                  ),
+                                hintText: "Prayer Content",
+                              ),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "The Prayer content cannot be empty";
@@ -293,14 +290,14 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             const Gap(16),
                             const Text("Date"),
                             const Gap(8),
-                                          
+
                             TextFormField(
                               key: dateKey,
                               controller: dateController,
                               keyboardType: TextInputType.datetime,
-                              decoration:  AppInputDecoration.inputDecoration(context)
-                                      .copyWith(
-                                  hintText: "Date"),
+                              decoration:
+                                  AppInputDecoration.inputDecoration(context)
+                                      .copyWith(hintText: "Date"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "The date cannot be blank";
@@ -314,18 +311,19 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                     initialDate: date ?? DateTime.now(),
                                     firstDate: DateTime(2022),
                                     lastDate: DateTime(2030));
-                                          
+
                                 setState(() {
                                   dateController.text = date.toString();
                                 });
                               },
                             ),
                             const Gap(16),
+
                             ///---------Button-------///
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
+                                        Theme.of(context).colorScheme.primary,
                                     foregroundColor: Theme.of(context)
                                         .scaffoldBackgroundColor),
                                 onPressed: () async {
@@ -333,41 +331,44 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                     Prayer newPrayer = Prayer(
                                         title: titleController.text,
                                         scripture: scriptureController.text,
-                                        scriptureReference: scriptureRefController.text,
+                                        scriptureReference:
+                                            scriptureRefController.text,
                                         content: contentController.text,
-                                        date: date??_oldPrayer.date);
+                                        date: date ?? _oldPrayer.date);
 
                                     if (isEditing) {
-                                      await prayerData.editPrayer(oldPrayer: _oldPrayer, newPrayer: newPrayer);
+                                      await prayerData.editPrayer(
+                                          oldPrayer: _oldPrayer,
+                                          newPrayer: newPrayer);
                                     } else {
-                                      await prayerData.uploadPrayer(prayer: newPrayer);
+                                      await prayerData.uploadPrayer(
+                                          prayer: newPrayer);
                                     }
-                                          
 
-                                          
                                     if (prayerData.state == AppState.error) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                              content: Text(prayerData.errorMessage)));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  prayerData.errorMessage)));
                                     }
-                                    if (prayerData.state == AppState.submitting) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                              content:
-                                                  Text("Submitting, please wait")));
+                                    if (prayerData.state ==
+                                        AppState.submitting) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Submitting, please wait")));
                                     }
                                     if (prayerData.state == AppState.success) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                              content: Text("Successfully submitted")));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Successfully submitted")));
                                     }
                                   } else {
                                     ///Todo: throw a snackbar or something
                                   }
                                 },
-                                child: Text(isEditing
-                                    ? "Save"
-                                    : "Add Prayer")),
+                                child: Text(isEditing ? "Save" : "Add Prayer")),
                             const Gap(48),
                           ],
                         ),
