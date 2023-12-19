@@ -14,7 +14,7 @@ class DevotionalFirestoreService extends FirestoreService {
     ///To ensure the app will auto update when the year changes
     final String currentYear = DateTime.now().year.toString();
     final devotionalDocumentReference =
-        firestore.collection("2024").doc("devotional").collection("devotional");
+        firestore.collection(year ?? currentYear).doc("devotional").collection("devotional");
 
     Stream<QuerySnapshot<Map<String, dynamic>>> stream =
         devotionalDocumentReference.snapshots();
@@ -75,7 +75,6 @@ class DevotionalFirestoreService extends FirestoreService {
   }) async {
     final String year = oldDevotional.startDate.year.toString();
     final String month = monthFromDateTime(oldDevotional.startDate);
-
     final devotionalDocumentReference = firestore
         .collection(year)
         .doc("devotional")
@@ -156,7 +155,7 @@ class DevotionalFirestoreService extends FirestoreService {
 
         List<dynamic> devotionalList = documentData["devotional"];
 
-        //Now update the devotional, can use the index to remove the item
+        //Now remove the devotional
         devotionalList.removeWhere(
             (element) => Devotional.fromMap(data: element) == devotional);
 

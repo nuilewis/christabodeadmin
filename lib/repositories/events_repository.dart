@@ -15,28 +15,26 @@ class EventsRepository {
       {required this.eventsFirestoreService,
         required this.connectionChecker});
 
-  final List<Event> _eventsList = [];
   final String currentYear = DateTime.now().year.toString();
 
 
-  Future<Either<Failure, List<Event>>> getEvents(String? year) async {
+  Future<Either<Failure,Stream<DocumentSnapshot<Map<String, dynamic>>>>> getEvents(String? year) async {
     if (await connectionChecker.isConnected) {
       try {
-        QuerySnapshot querySnapshot =
+        Stream<DocumentSnapshot<Map<String, dynamic>>> querySnapshot =
         await eventsFirestoreService.getEvents(year: year);
 
-
-        if (querySnapshot.docs.isNotEmpty) {
-          for (DocumentSnapshot element in querySnapshot.docs) {
-            Map<String, dynamic> documentData =
-            element.data() as Map<String, dynamic>;
-
-            Event event =
-            Event.fromMap(data: documentData, docId: element.id);
-            _eventsList.add(event);
-          }
-        }
-        return Right(_eventsList);
+        // if (querySnapshot.docs.isNotEmpty) {
+        //   for (DocumentSnapshot element in querySnapshot.docs) {
+        //     Map<String, dynamic> documentData =
+        //     element.data() as Map<String, dynamic>;
+        //
+        //     Event event =
+        //     Event.fromMap(data: documentData, docId: element.id);
+        //     _eventsList.add(event);
+        //   }
+        // }
+        return Right(querySnapshot);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
@@ -66,11 +64,12 @@ class EventsRepository {
 
 
   Future<Either<Failure, void>> editEvent(
-      {required Event event}) async {
+      {required Event oldEvent, required Event newEvent}) async {
     if (await connectionChecker.isConnected) {
       try {
         await eventsFirestoreService.editEvent(
-          event: event,
+          oldEvent:  oldEvent,
+          newEvent: newEvent,
         );
         return const Right(null);
       } on FirebaseException catch (e) {

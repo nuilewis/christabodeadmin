@@ -62,7 +62,6 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
     scriptureRefController.dispose();
     scriptureController.dispose();
     titleController.dispose();
-
     super.dispose();
   }
 

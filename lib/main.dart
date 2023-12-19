@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<PrayerProvider>(
             create: (context) => PrayerProvider(_prayerRepository)..getPrayers()),
         ChangeNotifierProvider<EventProvider>(
-            create: (context) => EventProvider(_eventsRepository)),
+            create: (context) => EventProvider(_eventsRepository)..getEvents("2024")),
 
       ],
       child: MaterialApp(

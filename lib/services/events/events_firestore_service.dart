@@ -6,20 +6,15 @@ import '../../models/event_model.dart';
 
 class EventsFirestoreService extends FirestoreService {
   ///------------Read Operations---------------///
-  Future<QuerySnapshot> getEvents({String? year}) async {
+  Future<Stream<DocumentSnapshot<Map<String, dynamic>>>> getEvents({String? year}) async {
     ///To ensure the app will auto update when the year changes
     final String currentYear = DateTime.now().year.toString();
+    final devotionalDocumentReference =
+    firestore.collection(year ?? currentYear).doc("events");
 
-    try {
-      QuerySnapshot<Map<String, dynamic>> result = await firestore
-          .collection(year ?? currentYear)
-          .doc("events")
-          .collection("events")
-          .get();
-      return result;
-    } on FirebaseException {
-      rethrow;
-    }
+    Stream<DocumentSnapshot<Map<String, dynamic>>> stream =
+    devotionalDocumentReference.snapshots();
+    return stream;
   }
 
   ///-------------Write Operations-------------///
@@ -56,16 +51,17 @@ class EventsFirestoreService extends FirestoreService {
           );
         }
       },
-    );
-    //     .then((value) => debugPrint("Document Snapshot successfully updated"),
-    //     onError: (e) {
-    //   throw Exception(e.toString());
-    // });
+    )
+        .then((value) => debugPrint("Document Snapshot successfully updated"),
+        onError: (e) {
+      throw Exception(e.toString());
+    });
   }
 
-  Future<void> editEvent({required Event event}) async {
-    final Map<String, dynamic> eventData = event.toMap();
-    final String year = event.startDate.year.toString();
+  Future<void> editEvent({required Event oldEvent, required Event newEvent
+
+  }) async {
+    final String year = oldEvent.startDate.year.toString();
     final eventsDocumentReference = firestore.collection(year).doc("events");
 
     firestore.runTransaction(
@@ -81,13 +77,33 @@ class EventsFirestoreService extends FirestoreService {
 
         List<dynamic> eventsList = documentData["events"];
 
-        //Now update the Event, can use the index
+        //Get the index of the old Event, then replace it with the new devotional
         int index = eventsList
-            .indexWhere((element) => element["date"] == event.startDate);
-        eventsList[index] = eventData;
+            .indexWhere((element) => Event.fromMap(data: element)== oldEvent);
 
-        //Now update the transaction
-        transaction.update(eventsDocumentReference, {"events": eventsList});
+        if(index==-1){
+          throw Exception("Failed to edit message, please refresh and try again");
+        }
+        eventsList[index] = newEvent.toMap();
+
+        ///If the month and year is the same, keep the same document reference, if not,
+        ///delete the old event and place the updated message in a new ref.
+
+        final String newYear = newEvent.startDate.year.toString();
+
+        if (newYear == year) {
+          //Now update the transaction in the new reference
+          transaction.update(
+              eventsDocumentReference, {"events": eventsList});
+        } else {
+          ///If the dates change, then delete the old Event
+          ///from the old reference, and add the updated Event
+          ///to a new reference
+          await deleteEvent(event: oldEvent);
+          await addEvent(event: newEvent);
+        }
+
+
       },
     ).then((value) => debugPrint("Document Snapshot successfully updated"),
         onError: (e) {
@@ -110,10 +126,8 @@ class EventsFirestoreService extends FirestoreService {
 
         List<dynamic> eventsList = documentData["events"];
 
-        //Now update the event and remove it, can use the index
-        int index =
-        eventsList.indexWhere((element) => element["startDate"] == event.startDate);
-        eventsList.removeAt(index);
+        //Now remove the devotional
+        eventsList.removeWhere((element) => Event.fromMap(data: element)==event);
 
         //Now update the transaction
         transaction.update(eventsDocumentReference, {"events": eventsList});

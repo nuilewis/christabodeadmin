@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +14,23 @@ class EventProvider extends ChangeNotifier {
   AppState state = AppState.initial;
   String errorMessage = "";
   List<Event> allEvents = [];
+  Stream<DocumentSnapshot<Map<String, dynamic>>> dataStream = const Stream.empty();
 
   EventProvider(this.eventsRepository);
+
+  void updateEventsList(List<Event> events) async{
+
+    allEvents = events;
+    //  notifyListeners();
+
+
+  }
 
   Future<void> getEvents(String? year) async {
     if (state == AppState.submitting) return;
     state = AppState.submitting;
     notifyListeners();
-    Either<Failure, List<Event>> response =
+    Either<Failure, Stream<DocumentSnapshot<Map<String, dynamic>>>> response =
         await eventsRepository.getEvents(year);
 
     response.fold((failure) {
@@ -28,8 +38,9 @@ class EventProvider extends ChangeNotifier {
           failure.errorMessage ?? "An error occurred while getting the events";
 
       state = AppState.error;
-    }, (events) {
-      allEvents = events;
+    }, (stream) {
+      dataStream = stream;
+    //  allEvents = events;
       state = AppState.success;
     });
     notifyListeners();
@@ -52,12 +63,12 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> editEvent({required Event event}) async {
+  Future<void> editEvent({required Event oldEvent, required Event newEvent}) async {
     if (state == AppState.submitting) return;
     state = AppState.submitting;
     notifyListeners();
     Either<Failure, void> response =
-        await eventsRepository.editEvent(event: event);
+        await eventsRepository.editEvent(oldEvent:  oldEvent, newEvent: newEvent);
 
     response.fold((failure) {
       errorMessage = failure.errorMessage ??

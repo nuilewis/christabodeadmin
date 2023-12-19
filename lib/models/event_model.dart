@@ -6,14 +6,14 @@ class Event extends Equatable {
   final String description;
   final DateTime startDate;
   final DateTime? endDate;
-  final String? docId;
+ // final String? docId;
 
   const Event({
     required this.name,
     required this.description,
     required this.startDate,
     this.endDate,
-    this.docId,
+ //   this.docId,
   });
 
   ///----copyWith----///
@@ -22,14 +22,14 @@ class Event extends Equatable {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
-    String? docId,
+//    String? docId,
   }) {
     return Event(
       name: name ?? this.name,
       description: description ?? this.description,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
-      docId: docId ?? this.docId,
+  //    docId: docId ?? this.docId,
     );
   }
 
@@ -47,16 +47,16 @@ class Event extends Equatable {
   // factory constructor that returns a Devotional obj from a Map<String, dynamic>
   factory Event.fromMap({
     required Map<String, dynamic> data,
-    required String docId,
+ //   required String docId,
   }) {
     Timestamp startDate = data["start"];
-    Timestamp endDate = data["end"];
+    Timestamp? endDate = data["end"];
     return Event(
       name: data["name"],
       description: data["description"],
       startDate: startDate.toDate(),
-      endDate: endDate.toDate(),
-      docId: docId,
+      endDate: endDate?.toDate(),
+   //   docId: docId,
     );
   }
 
