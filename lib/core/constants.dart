@@ -149,7 +149,7 @@ class AppColours {
   static const Color white = Color(0xFFFFFBFF);
 
   ///-----------Purple---------///
-  static const Color blueSeed = Color(0xFF001B3E);
+  static const Color blueSeed = Color(0xFF1F84FB);
   static const Color blue10 = Color(0xFF002F64);
   static const Color blue20 = Color(0xFF002F64);
   static const Color blue30 = Color(0xFF00458D);
