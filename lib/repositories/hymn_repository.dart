@@ -18,22 +18,22 @@ class HymnRepository {
   final String currentYear = DateTime.now().year.toString();
 
 
-  Future<Either<Failure, List<Hymn>>> getHymns() async {
+  Future<Either<Failure, Stream<DocumentSnapshot<Map<String, dynamic>>>>> getHymns() async {
     if (await connectionChecker.isConnected) {
       try {
-        QuerySnapshot querySnapshot = await hymnFirestoreService.getHymn();
+        Stream<DocumentSnapshot<Map<String, dynamic>>> querySnapshot = await hymnFirestoreService.getHymn();
 
-        if (querySnapshot.docs.isNotEmpty) {
-          for (DocumentSnapshot element in querySnapshot.docs) {
-            Map<String, dynamic> documentData =
-            element.data() as Map<String, dynamic>;
-
-            Hymn hymn =
-            Hymn.fromMap(data: documentData, docId: element.id);
-            _hymnList.add(hymn);
-          }
-        }
-        return Right(_hymnList);
+        // if (querySnapshot.docs.isNotEmpty) {
+        //   for (DocumentSnapshot element in querySnapshot.docs) {
+        //     Map<String, dynamic> documentData =
+        //     element.data() as Map<String, dynamic>;
+        //
+        //     Hymn hymn =
+        //     Hymn.fromMap(data: documentData, docId: element.id);
+        //     _hymnList.add(hymn);
+        //   }
+        // }
+        return Right(querySnapshot);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
@@ -60,10 +60,10 @@ class HymnRepository {
   }
 
 
-  Future<Either<Failure, void>> editHymn({required Hymn hymn}) async {
+  Future<Either<Failure, void>> editHymn({required Hymn oldHymn, required Hymn newHymn}) async {
     if (await connectionChecker.isConnected) {
       try {
-        await hymnFirestoreService.editHymn(hymn: hymn);
+        await hymnFirestoreService.editHymn(oldHymn: oldHymn, newHymn: newHymn);
         return const Right(null);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));

@@ -6,10 +6,16 @@ import '../../models/hymn_modell.dart';
 
 class HymnFirestoreService extends FirestoreService {
   ///------------Read Operations---------------///
-  Future<QuerySnapshot> getHymn() async {
+  Future<Stream<DocumentSnapshot<Map<String, dynamic>>>>  getHymn() async {
     QuerySnapshot<Map<String, dynamic>> result =
         await firestore.collection("hymn").get();
-    return result;
+
+    final hymnDocumentReference =
+    firestore.collection("hymn").doc("hymn");
+
+    Stream<DocumentSnapshot<Map<String, dynamic>>> stream =
+    hymnDocumentReference.snapshots();
+    return stream;
   }
 
   ///-------------Write Operations-------------///
@@ -53,11 +59,9 @@ class HymnFirestoreService extends FirestoreService {
     });
   }
 
-  Future<void> editHymn({required Hymn hymn}) async {
+  Future<void> editHymn({required Hymn oldHymn, required Hymn newHymn}) async {
     //Get all Hymns first, then parse into a List of Maps, add this hymn to it, then upload. Use a Firebase transaction for that
-    final hymnDocumentReference = firestore.collection("hymns").doc("hymn");
-
-    final Map<String, dynamic> hymnData = hymn.toMap();
+    final hymnDocumentReference = firestore.collection("hymn").doc("hymn");
 
     firestore.runTransaction(
       (transaction) async {
@@ -66,15 +70,20 @@ class HymnFirestoreService extends FirestoreService {
             await transaction.get(hymnDocumentReference);
 
         //Parse Data
-        Map<String, dynamic>? documentData =
+        Map<String, dynamic> documentData =
             snapshot.data() as Map<String, dynamic>;
 
         List<dynamic> hymnList = documentData["hymn"];
 
-        //Now update the hymn, can use the index
+        //Get the index of the old Hymn, then replace it with the new Hymn
+
         int index =
-            hymnList.indexWhere((element) => element["number"] == hymn.number);
-        hymnList[index] = hymnData;
+            hymnList.indexWhere((element) => Hymn.fromMap(data: element) == oldHymn);
+        if(index==-1){
+          throw Exception("Failed to edit message, please refresh and try again");
+        }
+
+        hymnList[index] = newHymn.toMap();
 
         //Now update the transaction
         transaction.update(hymnDocumentReference, {"hymn": hymnList});
@@ -101,10 +110,9 @@ class HymnFirestoreService extends FirestoreService {
 
         List<dynamic> hymnList = documentData["hymn"];
 
-        //Now update the hymn, can use the index to remove the item
-        int index =
-            hymnList.indexWhere((element) => element["number"] == hymn.number);
-        hymnList.removeAt(index);
+        //Now Remove the Hymn
+
+        hymnList.removeWhere((element) => Hymn.fromMap(data: element)==hymn);
 
         //Now update the transaction
         transaction.update(hymnDocumentReference, {"hymn": hymnList});

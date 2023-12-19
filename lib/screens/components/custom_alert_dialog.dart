@@ -21,7 +21,7 @@ class CustomAlertDialog extends StatelessWidget {
       surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       actionsPadding: const EdgeInsets.all(16),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(48)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       actions: [
         ElevatedButton(
             onPressed: () {

@@ -169,10 +169,11 @@ class _PrayerScreenState extends State<PrayerScreen> {
               Expanded(
                 flex: 3,
                 child: Padding(
+
                   padding: const EdgeInsets.only(
                       left: 4, top: 8, bottom: 8, right: 8),
                   child: Container(
-
+                    height: MediaQuery.sizeOf(context).height,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),

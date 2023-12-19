@@ -10,6 +10,7 @@ class ContentListViewItem extends StatelessWidget {
   final DateTime? endDate;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
+  final bool ishymn;
 
   const ContentListViewItem(
       {super.key,
@@ -17,7 +18,9 @@ class ContentListViewItem extends StatelessWidget {
       required this.date,
       this.endDate,
       required this.onEditPressed,
-      required this.onDeletePressed});
+      required this.onDeletePressed,
+      this.ishymn = false,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -39,19 +42,22 @@ class ContentListViewItem extends StatelessWidget {
                     .bodyMedium!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              Row(
-                children: [
-                  Text(
-                    dateTimeFormatter(context, date),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  Visibility(
-                      visible: endDate != null,
-                      child: Text(
-                        " - ${dateTimeFormatter(context, endDate ?? DateTime.now())}",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      )),
-                ],
+              Visibility(
+                visible:  !ishymn,
+                child: Row(
+                  children: [
+                    Text(
+                      dateTimeFormatter(context, date),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Visibility(
+                        visible: endDate != null,
+                        child: Text(
+                          " - ${dateTimeFormatter(context, endDate ?? DateTime.now())}",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )),
+                  ],
+                ),
               )
             ],
           ),

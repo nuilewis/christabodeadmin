@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<HymnnProvider>(
-            create: (context) => HymnnProvider(_hymnRepository)),
+            create: (context) => HymnnProvider(_hymnRepository)..getHymns()),
         ChangeNotifierProvider<DevotionalProvider>(
             create: (context) => DevotionalProvider(_devotionalRepository)..getDevotional( "2024")),
         ChangeNotifierProvider<PrayerProvider>(

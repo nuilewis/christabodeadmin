@@ -5,13 +5,13 @@ class Hymn extends Equatable {
   final String content;
   final int number;
 
-  final String? docId;
+ // final String? docId;
 
   const Hymn({
     required this.title,
     required this.content,
     required this.number,
-    this.docId,
+  //  this.docId,
   });
 
   ///----copyWith----///
@@ -19,13 +19,13 @@ class Hymn extends Equatable {
     String? title,
     String? content,
     int? number,
-    String? docId,
+ //   String? docId,
   }) {
     return Hymn(
       title: title ?? this.title,
       content: content ?? this.content,
   number: number ?? this.number,
-      docId: docId ?? this.docId,
+  //    docId: docId ?? this.docId,
     );
   }
 
@@ -43,7 +43,7 @@ class Hymn extends Equatable {
   // factory constructor that returns a Devotional obj from a Map<String, dynamic>
   factory Hymn.fromMap({
     required Map<String, dynamic> data,
-    required String docId,
+ //   required String docId,
   }) {
 
     return Hymn(
@@ -51,7 +51,7 @@ class Hymn extends Equatable {
       content: data["content"],
       number: data["number"],
 
-      docId: docId,
+   //   docId: docId,
     );
   }
 

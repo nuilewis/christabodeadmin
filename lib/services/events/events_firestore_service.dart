@@ -9,11 +9,11 @@ class EventsFirestoreService extends FirestoreService {
   Future<Stream<DocumentSnapshot<Map<String, dynamic>>>> getEvents({String? year}) async {
     ///To ensure the app will auto update when the year changes
     final String currentYear = DateTime.now().year.toString();
-    final devotionalDocumentReference =
+    final eventsDocumentReference =
     firestore.collection(year ?? currentYear).doc("events");
 
     Stream<DocumentSnapshot<Map<String, dynamic>>> stream =
-    devotionalDocumentReference.snapshots();
+    eventsDocumentReference.snapshots();
     return stream;
   }
 
@@ -77,9 +77,9 @@ class EventsFirestoreService extends FirestoreService {
 
         List<dynamic> eventsList = documentData["events"];
 
-        //Get the index of the old Event, then replace it with the new devotional
+        //Get the index of the old Event, then replace it with the new Event
         int index = eventsList
-            .indexWhere((element) => Event.fromMap(data: element)== oldEvent);
+            .indexWhere((element) => Event.fromMap(data: element) == oldEvent);
 
         if(index==-1){
           throw Exception("Failed to edit message, please refresh and try again");
