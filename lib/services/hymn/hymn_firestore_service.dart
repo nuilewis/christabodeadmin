@@ -7,8 +7,6 @@ import '../../models/hymn_modell.dart';
 class HymnFirestoreService extends FirestoreService {
   ///------------Read Operations---------------///
   Future<Stream<DocumentSnapshot<Map<String, dynamic>>>>  getHymn() async {
-    QuerySnapshot<Map<String, dynamic>> result =
-        await firestore.collection("hymn").get();
 
     final hymnDocumentReference =
     firestore.collection("hymn").doc("hymn");

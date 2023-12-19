@@ -14,7 +14,6 @@ class HymnRepository {
   HymnRepository(
       {required this.hymnFirestoreService, required this.connectionChecker});
 
-  final List<Hymn> _hymnList = [];
   final String currentYear = DateTime.now().year.toString();
 
 
