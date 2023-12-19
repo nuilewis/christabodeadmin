@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Devotional extends Equatable {
-  final String? docId;
+  //final String? docId;
   final String title;
   final String scripture;
   final String scriptureReference;
@@ -21,7 +21,7 @@ class Devotional extends Equatable {
     required this.content,
     required this.startDate,
     required this.endDate,
-    this.docId,
+  //  this.docId,
   });
 
   Devotional copyWith({
@@ -36,7 +36,7 @@ class Devotional extends Equatable {
     DateTime? endDate,
   }) {
     return Devotional(
-        docId: docId ?? this.docId,
+       // docId: docId ?? this.docId,
         title: title ?? this.title,
         scripture: scripture ?? this.scripture,
         scriptureReference: scriptureReference ?? this.scriptureReference,
@@ -65,7 +65,7 @@ class Devotional extends Equatable {
   // factory constructor that returns a Devotional obj from a Map<String, dynamic>
   factory Devotional.fromMap({
     required Map<String, dynamic> data,
-    required String docId,
+   // required String docId,
   }) {
     Timestamp startDate = data["start"];
     Timestamp endDate = data["end"];
@@ -78,13 +78,13 @@ class Devotional extends Equatable {
       endDate: endDate.toDate(),
       confessionOfFaith: data["confession"],
       author: data["author"],
-      docId: docId,
+ //     docId: docId,
     );
   }
 
   ///------------isEmpty logic----------///
   static Devotional empty = Devotional(
-      docId: "docId",
+ //     docId: "docId",
       title: "title",
       scripture: "scripture",
       scriptureReference: "scriptureReference",
@@ -97,7 +97,7 @@ class Devotional extends Equatable {
   bool get isNotEmpty => this != Devotional.empty;
   @override
   List<Object?> get props => [
-        docId,
+      //  docId,
         title,
         scripture,
         scriptureReference,

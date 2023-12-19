@@ -15,7 +15,7 @@ class ContentListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return    Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
 
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -37,9 +37,9 @@ class ContentListViewItem extends StatelessWidget {
               )
 
             ],),
-          Spacer(),
-          IconButton(onPressed: onEditPressed, icon: Icon(FluentIcons.edit_24_regular)),
-          IconButton(onPressed: onDeletePressed, icon: Icon(FluentIcons.delete_24_regular),),
+          const Spacer(),
+          IconButton(onPressed: onEditPressed, icon: const Icon(FluentIcons.edit_24_regular)),
+          IconButton(onPressed: onDeletePressed, icon: const Icon(FluentIcons.delete_24_regular),),
         ],
       ),
     );

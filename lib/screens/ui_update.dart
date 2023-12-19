@@ -24,7 +24,7 @@ class UiUpdateScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     color: AppColours.white),

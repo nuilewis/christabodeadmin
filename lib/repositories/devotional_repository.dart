@@ -16,27 +16,30 @@ class DevotionalRepository{
       {required this.devotionalFirestoreService,
       required this.connectionChecker});
 
-  final List<Devotional> _devotionalList = [];
   final String currentYear = DateTime.now().year.toString();
 
 
-  Future<Either<Failure, List<Devotional>>> getDevotionals(String? year) async {
+  Future<Either<Failure, Stream<QuerySnapshot<Map<String, dynamic>>>>> getDevotionals(String? year) async {
     if (await connectionChecker.isConnected) {
       try {
-        QuerySnapshot querySnapshot =
+        Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
             await devotionalFirestoreService.getDevotionals(year: year);
 
-        if (querySnapshot.docs.isNotEmpty) {
-          for (DocumentSnapshot element in querySnapshot.docs) {
-            Map<String, dynamic> documentData =
-                element.data() as Map<String, dynamic>;
+        // querySnapshot.listen((snapshot) {
+        //  final documentData = snapshot.docs;
+        //  for (var element in documentData) {
+        //  Map<String, dynamic> data = element.data();
+        //    List<dynamic> monthlyList = data["devotional"] as List<dynamic>;
+        //      for (Map<String, dynamic> element in monthlyList) {
+        //      _devotionalList.add(Devotional.fromMap(data: element));
+        //      }
+        //  }
+        //
+        // });
 
-            Devotional devotional =
-                Devotional.fromMap(data: documentData, docId: element.id);
-            _devotionalList.add(devotional);
-          }
-        }
-        return Right(_devotionalList);
+
+
+       return Right(querySnapshot);
       } on FirebaseException catch (e) {
         return Left(Failure(errorMessage: e.message, code: e.code));
       } catch (e) {
@@ -66,11 +69,12 @@ class DevotionalRepository{
 
 
   Future<Either<Failure, void>> editDevotionalMessage(
-      {required Devotional devotional}) async {
+      {required Devotional oldDevotional, required Devotional newDevotional}) async {
     if (await connectionChecker.isConnected) {
       try {
         await devotionalFirestoreService.editDevotionalMessage(
-          devotional: devotional,
+          oldDevotional: oldDevotional,
+          newDevotional: newDevotional,
         );
         return const Right(null);
       } on FirebaseException catch (e) {

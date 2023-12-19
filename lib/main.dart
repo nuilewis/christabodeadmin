@@ -9,7 +9,6 @@ import 'package:christabodeadmin/screens/events/events_screen.dart';
 import 'package:christabodeadmin/screens/homescreen/homescreen.dart';
 import 'package:christabodeadmin/screens/hymn/hymn_screen.dart';
 import 'package:christabodeadmin/screens/prayer/prayer_screen.dart';
-import 'package:christabodeadmin/screens/ui_update.dart';
 import 'package:christabodeadmin/services/devotional/devotional_firestore_service.dart';
 import 'package:christabodeadmin/services/events/events_firestore_service.dart';
 import 'package:christabodeadmin/services/hymn/hymn_firestore_service.dart';
@@ -90,7 +89,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<HymnnProvider>(
             create: (context) => HymnnProvider(_hymnRepository)),
         ChangeNotifierProvider<DevotionalProvider>(
-            create: (context) => DevotionalProvider(_devotionalRepository)),
+            create: (context) => DevotionalProvider(_devotionalRepository)..getDevotional( "2024")),
         ChangeNotifierProvider<PrayerProvider>(
             create: (context) => PrayerProvider(_prayerRepository)),
         ChangeNotifierProvider<EventProvider>(
