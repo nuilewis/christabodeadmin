@@ -104,6 +104,11 @@ class _EventScreenState extends State<EventScreen> {
                                   eventData.updateEventsList(allEvents);
                                 }
 
+                                if(eventData.allEvents.isEmpty){
+                                  return const Center(
+                                      child: Text("There are no Events, Added events will show here."));
+                                }
+
                                 return ListView.separated(
                                   shrinkWrap: true,
                                   itemCount: eventData.allEvents.length,
@@ -172,11 +177,13 @@ class _EventScreenState extends State<EventScreen> {
                             const Gap(24),
                             Row(
                               children: [
-                                Text(isEditing ? "Edit Event" : "Add Event",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall),
-                                const Spacer(),
+                                Expanded(
+                                  child: Text(isEditing ? "Edit Event" : "Add Event",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall),
+                                ),
+
                                 Visibility(
                                   visible: isEditing,
                                   child: ElevatedButton(

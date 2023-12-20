@@ -128,6 +128,10 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                   devotionalData
                                       .updateDevotionalList(allDevotionals);
                                 }
+                                if(devotionalData.allDevotionals.isEmpty){
+                                  return const Center(
+                                      child: Text("There are no Devotional Messages, added messages will show here."));
+                                }
 
                                 return ListView.separated(
                                   shrinkWrap: true,
@@ -219,14 +223,16 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             const Gap(24),
                              Row(
                               children: [
-                                Text(
-                                    isEditing
-                                        ? "Edit Message"
-                                        : "Add Devotional Messages",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall),
-                                const Spacer(),
+                                Expanded(
+                                  child: Text(
+                                      isEditing
+                                          ? "Edit Message"
+                                          : "Add Devotional Messages",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall),
+                                ),
+
                                 Visibility(
                                   visible: isEditing,
                                   child: ElevatedButton(

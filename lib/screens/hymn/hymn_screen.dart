@@ -93,6 +93,11 @@ class _HymnScreenState extends State<HymnScreen> {
 
                                 }
 
+                                if(hymnData.allHymns.isEmpty){
+                                  return const Center(
+                                      child: Text("There are no Hymns, Added hymns will show here."));
+                                }
+
                                 return ListView.separated(
                                   shrinkWrap: true,
                                   itemCount: hymnData.allHymns.length,
@@ -156,14 +161,16 @@ class _HymnScreenState extends State<HymnScreen> {
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Gap(24),
+                            const Gap(24),
                             Row(
                               children: [
-                                Text(isEditing ? "Edit Hymn" : "Add Hymn",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall),
-                                const Spacer(),
+                                Expanded(
+                                  child: Text(isEditing ? "Edit Hymn" : "Add Hymn",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall),
+                                ),
+
                                 Visibility(
                                   visible: isEditing,
                                   child: ElevatedButton(

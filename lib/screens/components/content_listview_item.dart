@@ -32,36 +32,38 @@ class ContentListViewItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              Visibility(
-                visible:  !ishymn,
-                child: Row(
-                  children: [
-                    Text(
-                      dateTimeFormatter(context, date),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Visibility(
-                        visible: endDate != null,
-                        child: Text(
-                          " - ${dateTimeFormatter(context, endDate ?? DateTime.now())}",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        )),
-                  ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
-              )
-            ],
+                Visibility(
+                  visible:  !ishymn,
+                  child: Row(
+                    children: [
+                      Text(
+                        dateTimeFormatter(context, date),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Visibility(
+                          visible: endDate != null,
+                          child: Text(
+                            " - ${dateTimeFormatter(context, endDate ?? DateTime.now())}",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          )),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-          const Spacer(),
+
           IconButton(
               onPressed: onEditPressed,
               icon: const Icon(FluentIcons.edit_24_regular)),
