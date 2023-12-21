@@ -1,5 +1,6 @@
 import 'package:christabodeadmin/providers/prayer_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
   DateTime? date;
   String year = DateTime.now().year.toString();
   bool isEditing = false;
+  bool _showListSection = true;
   Prayer _oldPrayer = Prayer.empty;
 
   @override
@@ -59,105 +61,108 @@ class _PrayerScreenState extends State<PrayerScreen> {
               : Colors.black,
           body: Row(
             children: [
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 8, bottom: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(8),
-                          Text("Prayers",
-                              style: Theme.of(context).textTheme.headlineSmall),
-                          const Gap(24),
-                          Expanded(
-                            child: StreamBuilder<QuerySnapshot>(
-                              stream: prayerData.dataStream,
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text("An error has occurred"));
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: Text("Loading, Please wait"));
-                                }
-                                if (snapshot.hasData) {
-                                  List<Prayer> allPrayers = [];
+              Visibility(
+                visible: _showListSection,
+                child: Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8, top: 8, bottom: 8, right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(8),
+                            Text("Prayers",
+                                style: Theme.of(context).textTheme.headlineSmall),
+                            const Gap(24),
+                            Expanded(
+                              child: StreamBuilder<QuerySnapshot>(
+                                stream: prayerData.dataStream,
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Center(
+                                        child: Text("An error has occurred"));
+                                  }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: Text("Loading, Please wait"));
+                                  }
+                                  if (snapshot.hasData) {
+                                    List<Prayer> allPrayers = [];
 
-                                  ///Parsing data
-                                  dynamic documentData = snapshot.data!.docs;
-                                  for (var element in documentData) {
-                                    Map<String, dynamic> data =
-                                        element.data() as Map<String, dynamic>;
-                                    List<dynamic> monthlyList =
-                                        data["prayer"] as List<dynamic>;
-                                    for (Map<String, dynamic> element
-                                        in monthlyList) {
-                                      allPrayers
-                                          .add(Prayer.fromMap(data: element));
+                                    ///Parsing data
+                                    dynamic documentData = snapshot.data!.docs;
+                                    for (var element in documentData) {
+                                      Map<String, dynamic> data =
+                                          element.data() as Map<String, dynamic>;
+                                      List<dynamic> monthlyList =
+                                          data["prayer"] as List<dynamic>;
+                                      for (Map<String, dynamic> element
+                                          in monthlyList) {
+                                        allPrayers
+                                            .add(Prayer.fromMap(data: element));
+                                      }
                                     }
+
+                                    prayerData.updateDPrayerList(allPrayers);
                                   }
 
-                                  prayerData.updateDPrayerList(allPrayers);
-                                }
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    itemCount: prayerData.allPrayers.length,
+                                    itemBuilder: (context, index) {
+                                      return ContentListViewItem(
+                                          title:
+                                              prayerData.allPrayers[index].title,
+                                          onEditPressed: () {
+                                            _oldPrayer =
+                                                prayerData.allPrayers[index];
 
-                                return ListView.separated(
-                                  shrinkWrap: true,
-                                  itemCount: prayerData.allPrayers.length,
-                                  itemBuilder: (context, index) {
-                                    return ContentListViewItem(
-                                        title:
-                                            prayerData.allPrayers[index].title,
-                                        onEditPressed: () {
-                                          _oldPrayer =
-                                              prayerData.allPrayers[index];
+                                            ///Trigger Prayer Edit
+                                            ///
+                                            titleController.text =
+                                                _oldPrayer.title;
+                                            scriptureController.text =
+                                                _oldPrayer.scripture;
+                                            scriptureRefController.text =
+                                                _oldPrayer.scriptureReference;
+                                            contentController.text =
+                                                _oldPrayer.content;
 
-                                          ///Trigger Prayer Edit
-                                          ///
-                                          titleController.text =
-                                              _oldPrayer.title;
-                                          scriptureController.text =
-                                              _oldPrayer.scripture;
-                                          scriptureRefController.text =
-                                              _oldPrayer.scriptureReference;
-                                          contentController.text =
-                                              _oldPrayer.content;
+                                            dateController.text =
+                                                _oldPrayer.date.toString();
 
-                                          dateController.text =
-                                              _oldPrayer.date.toString();
-
-                                          setState(() {
-                                            isEditing = true;
-                                          });
-                                        },
-                                        onDeletePressed: () {
-                                          prayerData.deletePrayer(
-                                              prayer:
-                                                  prayerData.allPrayers[index]);
-                                        },
-                                        date:
-                                            prayerData.allPrayers[index].date);
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const Gap(8);
-                                  },
-                                );
-                              },
+                                            setState(() {
+                                              isEditing = true;
+                                            });
+                                          },
+                                          onDeletePressed: () {
+                                            prayerData.deletePrayer(
+                                                prayer:
+                                                    prayerData.allPrayers[index]);
+                                          },
+                                          date:
+                                              prayerData.allPrayers[index].date);
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const Gap(8);
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -172,7 +177,7 @@ class _PrayerScreenState extends State<PrayerScreen> {
                     height: MediaQuery.sizeOf(context).height,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(16),
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: SingleChildScrollView(
@@ -185,6 +190,17 @@ class _PrayerScreenState extends State<PrayerScreen> {
                             const Gap(24),
                             Row(
                               children: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showListSection = !_showListSection;
+                                      });
+                                    },
+                                    icon: Icon(_showListSection
+                                        ? FluentIcons.chevron_left_24_regular
+                                        : FluentIcons
+                                        .chevron_right_24_regular)),
+                                Gap(16),
                                 Text(isEditing ? "Edit Prayer" : "Add Prayer",
                                     style: Theme.of(context)
                                         .textTheme
@@ -329,11 +345,11 @@ class _PrayerScreenState extends State<PrayerScreen> {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     Prayer newPrayer = Prayer(
-                                        title: titleController.text,
-                                        scripture: scriptureController.text,
+                                        title: titleController.text.trim(),
+                                        scripture: scriptureController.text.trim(),
                                         scriptureReference:
-                                            scriptureRefController.text,
-                                        content: contentController.text,
+                                            scriptureRefController.text.trim(),
+                                        content: contentController.text.trim(),
                                         date: date ?? _oldPrayer.date);
 
                                     if (isEditing) {

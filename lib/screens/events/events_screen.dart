@@ -1,5 +1,6 @@
 import 'package:christabodeadmin/providers/event_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ class _EventScreenState extends State<EventScreen> {
   DateTime? endDate;
   String year = DateTime.now().year.toString();
   bool isEditing = false;
+  bool _showListSection = true;
   Event _oldEvent = Event.empty;
 
   @override
@@ -57,98 +59,101 @@ class _EventScreenState extends State<EventScreen> {
               : Colors.black,
           body: Row(
             children: [
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 8, bottom: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(8),
-                          Text("Events",
-                              style: Theme.of(context).textTheme.headlineSmall),
-                          const Gap(24),
-                          Expanded(
-                            child: StreamBuilder<DocumentSnapshot>(
-                              stream: eventData.dataStream,
-                              builder: (context,
-                                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text("An error has occurred"));
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: Text("Loading, Please wait"));
-                                }
-                                if (snapshot.hasData) {
-                                  List<Event> allEvents = [];
+              Visibility(
+                visible: _showListSection,
+                child: Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8, top: 8, bottom: 8, right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(8),
+                            Text("Events",
+                                style: Theme.of(context).textTheme.headlineSmall),
+                            const Gap(24),
+                            Expanded(
+                              child: StreamBuilder<DocumentSnapshot>(
+                                stream: eventData.dataStream,
+                                builder: (context,
+                                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Center(
+                                        child: Text("An error has occurred"));
+                                  }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: Text("Loading, Please wait"));
+                                  }
+                                  if (snapshot.hasData) {
+                                    List<Event> allEvents = [];
 
-                                  ///Parsing data
-                                  dynamic documentData = snapshot.data?.data();
+                                    ///Parsing data
+                                    dynamic documentData = snapshot.data?.data();
 
-                                  for (Map<String, dynamic> element
-                                      in documentData["events"]) {
-                                    allEvents.add(Event.fromMap(data: element));
+                                    for (Map<String, dynamic> element
+                                        in documentData["events"]) {
+                                      allEvents.add(Event.fromMap(data: element));
+                                    }
+
+                                    eventData.updateEventsList(allEvents);
                                   }
 
-                                  eventData.updateEventsList(allEvents);
-                                }
+                                  if(eventData.allEvents.isEmpty){
+                                    return const Center(
+                                        child: Text("There are no Events, Added events will show here."));
+                                  }
 
-                                if(eventData.allEvents.isEmpty){
-                                  return const Center(
-                                      child: Text("There are no Events, Added events will show here."));
-                                }
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    itemCount: eventData.allEvents.length,
+                                    itemBuilder: (context, index) {
+                                      return ContentListViewItem(
+                                        title: eventData.allEvents[index].name,
+                                        onEditPressed: () {
+                                          _oldEvent = eventData.allEvents[index];
 
-                                return ListView.separated(
-                                  shrinkWrap: true,
-                                  itemCount: eventData.allEvents.length,
-                                  itemBuilder: (context, index) {
-                                    return ContentListViewItem(
-                                      title: eventData.allEvents[index].name,
-                                      onEditPressed: () {
-                                        _oldEvent = eventData.allEvents[index];
+                                          ///Trigger Event Edit
+                                          ///
+                                          nameController.text = _oldEvent.name;
+                                          descriptionController.text =
+                                              _oldEvent.description;
+                                          startDateController.text =
+                                              _oldEvent.startDate.toString();
+                                          endDateController.text =
+                                              _oldEvent.endDate.toString();
 
-                                        ///Trigger Event Edit
-                                        ///
-                                        nameController.text = _oldEvent.name;
-                                        descriptionController.text =
-                                            _oldEvent.description;
-                                        startDateController.text =
-                                            _oldEvent.startDate.toString();
-                                        endDateController.text =
-                                            _oldEvent.endDate.toString();
-
-                                        setState(() {
-                                          isEditing = true;
-                                        });
-                                      },
-                                      onDeletePressed: () {
-                                        eventData.deleteEvent(
-                                            event: eventData.allEvents[index]);
-                                      },
-                                      date:
-                                          eventData.allEvents[index].startDate,
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const Gap(8);
-                                  },
-                                );
-                              },
+                                          setState(() {
+                                            isEditing = true;
+                                          });
+                                        },
+                                        onDeletePressed: () {
+                                          eventData.deleteEvent(
+                                              event: eventData.allEvents[index]);
+                                        },
+                                        date:
+                                            eventData.allEvents[index].startDate,
+                                      );
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const Gap(8);
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -164,7 +169,7 @@ class _EventScreenState extends State<EventScreen> {
                     height: MediaQuery.sizeOf(context).height,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(16),
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: SingleChildScrollView(
@@ -177,6 +182,18 @@ class _EventScreenState extends State<EventScreen> {
                             const Gap(24),
                             Row(
                               children: [
+
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showListSection = !_showListSection;
+                                      });
+                                    },
+                                    icon: Icon(_showListSection
+                                        ? FluentIcons.chevron_left_24_regular
+                                        : FluentIcons
+                                        .chevron_right_24_regular)),
+                                Gap(16),
                                 Expanded(
                                   child: Text(isEditing ? "Edit Event" : "Add Event",
                                       style: Theme.of(context)
@@ -315,8 +332,8 @@ class _EventScreenState extends State<EventScreen> {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     Event newEvent = Event(
-                                        name: nameController.text,
-                                        description: descriptionController.text,
+                                        name: nameController.text.trim(),
+                                        description: descriptionController.text.trim(),
                                         startDate: startDate ?? _oldEvent.startDate,
                                         endDate: endDate ?? _oldEvent.endDate);
 

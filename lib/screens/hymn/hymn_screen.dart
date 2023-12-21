@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class _HymnScreenState extends State<HymnScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isEditing = false;
+  bool _showListSection = true;
   Hymn _oldHymn = Hymn.empty;
 
   @override
@@ -46,97 +48,100 @@ class _HymnScreenState extends State<HymnScreen> {
               : Colors.black,
           body: Row(
             children: [
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 8, bottom: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(8),
-                          Text("Hymns",
-                              style: Theme.of(context).textTheme.headlineSmall),
-                          const Gap(24),
-                          Expanded(
-                            child: StreamBuilder<DocumentSnapshot>(
-                              stream: hymnData.dataStream,
-                              builder: (context,
-                                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text("An error has occurred"));
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: Text("Loading, Please wait"));
-                                }
-                                if (snapshot.hasData) {
-                                  List<Hymn> allHymns = [];
-
-                                  ///Parsing data
-                                  Map<String, dynamic> documentData = snapshot.data?.data() as Map<String, dynamic>;
-
-                                  for (Map<String, dynamic> element
-                                  in documentData["hymn"]) {
-                                    allHymns.add(Hymn.fromMap(data: element));
+              Visibility(
+                visible: _showListSection,
+                child: Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8, top: 8, bottom: 8, right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(8),
+                            Text("Hymns",
+                                style: Theme.of(context).textTheme.headlineSmall),
+                            const Gap(24),
+                            Expanded(
+                              child: StreamBuilder<DocumentSnapshot>(
+                                stream: hymnData.dataStream,
+                                builder: (context,
+                                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Center(
+                                        child: Text("An error has occurred"));
                                   }
-                                  hymnData.updateHymnList(allHymns);
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: Text("Loading, Please wait"));
+                                  }
+                                  if (snapshot.hasData) {
+                                    List<Hymn> allHymns = [];
 
-                                }
+                                    ///Parsing data
+                                    Map<String, dynamic> documentData = snapshot.data?.data() as Map<String, dynamic>;
 
-                                if(hymnData.allHymns.isEmpty){
-                                  return const Center(
-                                      child: Text("There are no Hymns, Added hymns will show here."));
-                                }
+                                    for (Map<String, dynamic> element
+                                    in documentData["hymn"]) {
+                                      allHymns.add(Hymn.fromMap(data: element));
+                                    }
+                                    hymnData.updateHymnList(allHymns);
 
-                                return ListView.separated(
-                                  shrinkWrap: true,
-                                  itemCount: hymnData.allHymns.length,
-                                  itemBuilder: (context, index) {
-                                    return ContentListViewItem(
-                                      ishymn: true,
-                                      
-                                      title:hymnData.allHymns[index].title,
-                                      
-                                      onEditPressed: () {
-                                        _oldHymn = hymnData.allHymns[index];
-                                       
+                                  }
 
-                                        ///Trigger Event Edit
-                                        contentController.text = _oldHymn.content;
-                                        titleController.text = _oldHymn.title;
-                                        numberController.text = _oldHymn.number.toString();
+                                  if(hymnData.allHymns.isEmpty){
+                                    return const Center(
+                                        child: Text("There are no Hymns, Added hymns will show here."));
+                                  }
 
-                                        setState(() {
-                                          isEditing = true;
-                                        });
-                                      },
-                                      onDeletePressed: () {
-                                        hymnData.deleteHymn(hymn: hymnData.allHymns[index]);
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    itemCount: hymnData.allHymns.length,
+                                    itemBuilder: (context, index) {
+                                      return ContentListViewItem(
+                                        ishymn: true,
 
-                                      },
-                                      date: DateTime.now(),
+                                        title:hymnData.allHymns[index].title,
 
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const Gap(8);
-                                  },
-                                );
-                              },
+                                        onEditPressed: () {
+                                          _oldHymn = hymnData.allHymns[index];
+
+
+                                          ///Trigger Event Edit
+                                          contentController.text = _oldHymn.content;
+                                          titleController.text = _oldHymn.title;
+                                          numberController.text = _oldHymn.number.toString();
+
+                                          setState(() {
+                                            isEditing = true;
+                                          });
+                                        },
+                                        onDeletePressed: () {
+                                          hymnData.deleteHymn(hymn: hymnData.allHymns[index]);
+
+                                        },
+                                        date: DateTime.now(),
+
+                                      );
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const Gap(8);
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -151,7 +156,7 @@ class _HymnScreenState extends State<HymnScreen> {
                     height: MediaQuery.sizeOf(context).height,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(16),
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: SingleChildScrollView(
@@ -164,6 +169,17 @@ class _HymnScreenState extends State<HymnScreen> {
                             const Gap(24),
                             Row(
                               children: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showListSection = !_showListSection;
+                                      });
+                                    },
+                                    icon: Icon(_showListSection
+                                        ? FluentIcons.chevron_left_24_regular
+                                        : FluentIcons
+                                        .chevron_right_24_regular)),
+                                Gap(16),
                                 Expanded(
                                   child: Text(isEditing ? "Edit Hymn" : "Add Hymn",
                                       style: Theme.of(context)

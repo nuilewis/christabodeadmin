@@ -1,5 +1,6 @@
 import 'package:christabodeadmin/models/devotional_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -51,6 +52,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
   DateTime? endDate;
   String year = DateTime.now().year.toString();
   bool isEditing = false;
+  bool _showListSection = true;
   Devotional _oldDevotional = Devotional.empty;
 
   @override
@@ -75,127 +77,136 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
               : Colors.black,
           body: Row(
             children: [
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 8, bottom: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(8),
-                          Text("Devotional Messages",
-                              style: Theme.of(context).textTheme.headlineSmall),
-                          const Gap(24),
-                          Expanded(
-                            child: StreamBuilder<QuerySnapshot>(
-                              stream: devotionalData.dataStream,
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text("An error has occurred"));
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: Text("Loading, Please wait"));
-                                }
-                                if (snapshot.hasData) {
-                                  List<Devotional> allDevotionals = [];
+              Visibility(
+                visible: _showListSection,
+                child: Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8, top: 8, bottom: 8, right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(8),
+                            Text("Devotional Messages",
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall),
+                            const Gap(24),
+                            Expanded(
+                              child: StreamBuilder<QuerySnapshot>(
+                                stream: devotionalData.dataStream,
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Center(
+                                        child: Text("An error has occurred"));
+                                  }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: Text("Loading, Please wait"));
+                                  }
+                                  if (snapshot.hasData) {
+                                    List<Devotional> allDevotionals = [];
 
-                                  ///Parsing data
-                                  dynamic documentData = snapshot.data!.docs;
-                                  for (var element in documentData) {
-                                    Map<String, dynamic> data =
-                                        element.data() as Map<String, dynamic>;
-                                    List<dynamic> monthlyList =
-                                        data["devotional"] as List<dynamic>;
-                                    for (Map<String, dynamic> element
-                                        in monthlyList) {
-                                      allDevotionals.add(
-                                          Devotional.fromMap(data: element));
+                                    ///Parsing data
+                                    dynamic documentData = snapshot.data!.docs;
+                                    for (var element in documentData) {
+                                      Map<String, dynamic> data = element.data()
+                                          as Map<String, dynamic>;
+                                      List<dynamic> monthlyList =
+                                          data["devotional"] as List<dynamic>;
+                                      for (Map<String, dynamic> element
+                                          in monthlyList) {
+                                        allDevotionals.add(
+                                            Devotional.fromMap(data: element));
+                                      }
                                     }
+
+                                    devotionalData
+                                        .updateDevotionalList(allDevotionals);
+                                  }
+                                  if (devotionalData.allDevotionals.isEmpty) {
+                                    return const Center(
+                                        child: Text(
+                                            "There are no Devotional Messages, added messages will show here."));
                                   }
 
-                                  devotionalData
-                                      .updateDevotionalList(allDevotionals);
-                                }
-                                if(devotionalData.allDevotionals.isEmpty){
-                                  return const Center(
-                                      child: Text("There are no Devotional Messages, added messages will show here."));
-                                }
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        devotionalData.allDevotionals.length,
+                                    itemBuilder: (context, index) {
+                                      return ContentListViewItem(
+                                          title: devotionalData
+                                              .allDevotionals[index].title,
+                                          onEditPressed: () {
+                                            _oldDevotional = devotionalData
+                                                .allDevotionals[index];
 
-                                return ListView.separated(
-                                  shrinkWrap: true,
-                                  itemCount:
-                                      devotionalData.allDevotionals.length,
-                                  itemBuilder: (context, index) {
-                                    return ContentListViewItem(
-                                        title: devotionalData
-                                            .allDevotionals[index].title,
-                                        onEditPressed: () {
-                                          _oldDevotional = devotionalData
-                                              .allDevotionals[index];
+                                            ///Trigger devotional Edit
+                                            ///
+                                            titleController.text =
+                                                _oldDevotional.title;
+                                            scriptureController.text =
+                                                _oldDevotional.scripture;
+                                            scriptureRefController.text =
+                                                _oldDevotional
+                                                    .scriptureReference;
+                                            contentController.text =
+                                                _oldDevotional.content;
+                                            confessionController.text =
+                                                _oldDevotional
+                                                    .confessionOfFaith;
+                                            startDateController.text =
+                                                _oldDevotional.startDate
+                                                    .toString();
+                                            endDateController.text =
+                                                _oldDevotional.endDate
+                                                    .toString();
 
-                                          ///Trigger devotional Edit
-                                          ///
-                                          titleController.text =
-                                              _oldDevotional.title;
-                                          scriptureController.text =
-                                              _oldDevotional.scripture;
-                                          scriptureRefController.text =
-                                              _oldDevotional.scriptureReference;
-                                          contentController.text =
-                                              _oldDevotional.content;
-                                          confessionController.text =
-                                              _oldDevotional.confessionOfFaith;
-                                          startDateController.text =
-                                              _oldDevotional.startDate
-                                                  .toString();
-                                          endDateController.text =
-                                              _oldDevotional.endDate.toString();
+                                            if (_oldDevotional.author ==
+                                                "Pst. Leonard") {
+                                              author = DevotionalAuthor.brLeo;
+                                            } else if (_oldDevotional.author ==
+                                                "Pst. Belinda") {
+                                              author =
+                                                  DevotionalAuthor.auntyBelinda;
+                                            } else {
+                                              author =
+                                                  DevotionalAuthor.drDivine;
+                                            }
 
-                                          if (_oldDevotional.author ==
-                                              "Pst. Leonard") {
-                                            author = DevotionalAuthor.brLeo;
-                                          } else if (_oldDevotional.author ==
-                                              "Pst. Belinda") {
-                                            author =
-                                                DevotionalAuthor.auntyBelinda;
-                                          } else {
-                                            author = DevotionalAuthor.drDivine;
-                                          }
-
-                                          setState(() {
-                                            isEditing = true;
-                                          });
-                                        },
-                                        onDeletePressed: () {
-                                          devotionalData
-                                              .deleteDevotionalMessage(
-                                                  devotional: devotionalData
-                                                      .allDevotionals[index]);
-                                        },
-                                        date: devotionalData
-                                            .allDevotionals[index].startDate);
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const Gap(8);
-                                  },
-                                );
-                              },
+                                            setState(() {
+                                              isEditing = true;
+                                            });
+                                          },
+                                          onDeletePressed: () {
+                                            devotionalData
+                                                .deleteDevotionalMessage(
+                                                    devotional: devotionalData
+                                                        .allDevotionals[index]);
+                                          },
+                                          date: devotionalData
+                                              .allDevotionals[index].startDate);
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const Gap(8);
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -210,7 +221,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                     height: MediaQuery.sizeOf(context).height,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(16),
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: SingleChildScrollView(
@@ -221,8 +232,19 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(24),
-                             Row(
+                            Row(
                               children: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showListSection = !_showListSection;
+                                      });
+                                    },
+                                    icon: Icon(_showListSection
+                                        ? FluentIcons.chevron_left_24_regular
+                                        : FluentIcons
+                                            .chevron_right_24_regular)),
+                                Gap(16),
                                 Expanded(
                                   child: Text(
                                       isEditing
@@ -232,11 +254,13 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                           .textTheme
                                           .headlineSmall),
                                 ),
-
                                 Visibility(
                                   visible: isEditing,
                                   child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                                    style: ElevatedButton.styleFrom(
+                                        foregroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .error),
                                     onPressed: () {
                                       setState(() {
                                         isEditing = false;
@@ -354,7 +378,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                               },
                             ),
                             const Gap(16),
-                            const Text("Start Date"),
+                            const Text("Date"),
                             const Gap(8),
                             TextFormField(
                               key: startDateKey,
@@ -363,7 +387,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                               decoration:
                                   AppInputDecoration.inputDecoration(context)
                                       .copyWith(
-                                hintText: "Start Date",
+                                hintText: "Date",
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
@@ -385,36 +409,36 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                 });
                               },
                             ),
-                            const Gap(16),
-                            const Text("end Date"),
-                            const Gap(8),
-                            TextFormField(
-                              key: endDateKey,
-                              controller: endDateController,
-                              keyboardType: TextInputType.datetime,
-                              decoration:
-                                  AppInputDecoration.inputDecoration(context)
-                                      .copyWith(hintText: "End Date"),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "The end date cannot be blank";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              onTap: () async {
-                                endDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: startDate ?? DateTime.now(),
-                                  firstDate: DateTime(2022),
-                                  lastDate: DateTime(2030),
-                                );
-
-                                setState(() {
-                                  endDateController.text = endDate.toString();
-                                });
-                              },
-                            ),
+                            // const Gap(16),
+                            // const Text("end Date"),
+                            // const Gap(8),
+                            // TextFormField(
+                            //   key: endDateKey,
+                            //   controller: endDateController,
+                            //   keyboardType: TextInputType.datetime,
+                            //   decoration:
+                            //       AppInputDecoration.inputDecoration(context)
+                            //           .copyWith(hintText: "End Date"),
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return "The end date cannot be blank";
+                            //     } else {
+                            //       return null;
+                            //     }
+                            //   },
+                            //   onTap: () async {
+                            //     endDate = await showDatePicker(
+                            //       context: context,
+                            //       initialDate: startDate ?? DateTime.now(),
+                            //       firstDate: DateTime(2022),
+                            //       lastDate: DateTime(2030),
+                            //     );
+                            //
+                            //     setState(() {
+                            //       endDateController.text = endDate.toString();
+                            //     });
+                            //   },
+                            // ),
                             const Gap(16),
                             const Text("Author"),
                             const Gap(8),
@@ -450,14 +474,15 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     Devotional newDevotional = Devotional(
-                                        title: titleController.text,
-                                        scripture: scriptureController.text,
+                                        title: titleController.text.trim(),
+                                        scripture:
+                                            scriptureController.text.trim(),
                                         scriptureReference:
-                                            scriptureRefController.text,
+                                            scriptureRefController.text.trim(),
                                         confessionOfFaith:
-                                            confessionController.text,
+                                            confessionController.text.trim(),
                                         author: getAuthor(author),
-                                        content: contentController.text,
+                                        content: contentController.text.trim(),
                                         startDate: startDate ??
                                             _oldDevotional.startDate,
                                         endDate:
