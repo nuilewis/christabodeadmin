@@ -68,14 +68,14 @@ this.endDate,
    // required String docId,
   }) {
     Timestamp startDate = data["start"];
- //   Timestamp endDate = data["end"];
+ Timestamp? endDate = data["end"];
     return Devotional(
       title: data["title"],
       scripture: data["scripture"],
       scriptureReference: data["scriptureRef"],
       content: data["content"],
       startDate: startDate.toDate(),
-    //  endDate: endDate.toDate(),
+      endDate: endDate?.toDate(),
       confessionOfFaith: data["confession"],
       author: data["author"],
  //     docId: docId,
