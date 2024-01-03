@@ -193,7 +193,7 @@ class _EventScreenState extends State<EventScreen> {
                                         ? FluentIcons.chevron_left_24_regular
                                         : FluentIcons
                                         .chevron_right_24_regular)),
-                                Gap(16),
+                                const Gap(16),
                                 Expanded(
                                   child: Text(isEditing ? "Edit Event" : "Add Event",
                                       style: Theme.of(context)

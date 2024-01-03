@@ -179,7 +179,7 @@ class _HymnScreenState extends State<HymnScreen> {
                                         ? FluentIcons.chevron_left_24_regular
                                         : FluentIcons
                                         .chevron_right_24_regular)),
-                                Gap(16),
+                                const Gap(16),
                                 Expanded(
                                   child: Text(isEditing ? "Edit Hymn" : "Add Hymn",
                                       style: Theme.of(context)

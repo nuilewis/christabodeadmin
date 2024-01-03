@@ -10,7 +10,7 @@ class Devotional extends Equatable {
   final String confessionOfFaith;
   final String author;
   final DateTime startDate;
-  final DateTime endDate;
+  final DateTime? endDate;
 
   const Devotional({
     required this.title,
@@ -20,7 +20,7 @@ class Devotional extends Equatable {
     required this.author,
     required this.content,
     required this.startDate,
-    required this.endDate,
+this.endDate,
   //  this.docId,
   });
 
@@ -68,14 +68,14 @@ class Devotional extends Equatable {
    // required String docId,
   }) {
     Timestamp startDate = data["start"];
-    Timestamp endDate = data["end"];
+ //   Timestamp endDate = data["end"];
     return Devotional(
       title: data["title"],
       scripture: data["scripture"],
       scriptureReference: data["scriptureRef"],
       content: data["content"],
       startDate: startDate.toDate(),
-      endDate: endDate.toDate(),
+    //  endDate: endDate.toDate(),
       confessionOfFaith: data["confession"],
       author: data["author"],
  //     docId: docId,

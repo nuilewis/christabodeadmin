@@ -49,7 +49,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
   DevotionalAuthor author = DevotionalAuthor.brLeo;
   List<String> authorNames = ["Leonard, Belinda, Dr. Divine"];
   DateTime? startDate;
-  DateTime? endDate;
+  // DateTime? endDate;
   String year = DateTime.now().year.toString();
   bool isEditing = false;
   bool _showListSection = true;
@@ -168,9 +168,9 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                             startDateController.text =
                                                 _oldDevotional.startDate
                                                     .toString();
-                                            endDateController.text =
-                                                _oldDevotional.endDate
-                                                    .toString();
+                                            // endDateController.text =
+                                            //     _oldDevotional.endDate
+                                            //         .toString();
 
                                             if (_oldDevotional.author ==
                                                 "Pst. Leonard") {
@@ -244,7 +244,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                         ? FluentIcons.chevron_left_24_regular
                                         : FluentIcons
                                             .chevron_right_24_regular)),
-                                Gap(16),
+                                const Gap(16),
                                 Expanded(
                                   child: Text(
                                       isEditing
@@ -485,8 +485,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                                         content: contentController.text.trim(),
                                         startDate: startDate ??
                                             _oldDevotional.startDate,
-                                        endDate:
-                                            endDate ?? _oldDevotional.endDate);
+                                        endDate: null);
 
                                     if (isEditing) {
                                       await devotionalData
